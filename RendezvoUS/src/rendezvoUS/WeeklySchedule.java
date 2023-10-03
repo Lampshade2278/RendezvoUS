@@ -35,6 +35,35 @@ public class WeeklySchedule {
 		}
 	}
 	
+	public void getBusyHoursOfDay(int day, int busyHours[]) {
+		int newIndex = 0;
+		
+		for(int hourIndex = 0; hourIndex < availability[day].length; hourIndex++) {
+			if(availability[day][hourIndex] == true){
+				busyHours[newIndex] = hourIndex;
+				newIndex++;
+			}
+		}
+		
+		for(; newIndex < busyHours.length; newIndex++) {
+			busyHours[newIndex] = -1;
+		}
+		
+		
+	}
+	
+	public String getBusyHoursOfDay(int day) {
+		String busyString = new String();
+		
+		for(int hourIndex = 0; hourIndex < availability[day].length; hourIndex++) {
+			if(availability[day][hourIndex] == true){
+				busyString += String.valueOf(hourIndex) + ":00 \n";
+			}
+		}
+		
+		return busyString;
+	}
+	
 	public void showAvailability() {
 		
 		// Prints the hours as rows, and the days as columns
