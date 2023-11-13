@@ -5,47 +5,57 @@ import java.util.GregorianCalendar;
 
 public class CalendarModel {
     private Calendar calendar;
+    private EventStorage eventStorage; // Instance of EventStorage for managing events
 
-    public CalendarModel() {
-        calendar = new GregorianCalendar();
+    // Constructor initializes the calendar and event storage
+    public CalendarModel(EventStorage eventStorage) {
+        this.calendar = new GregorianCalendar();
+        this.eventStorage = eventStorage;
     }
 
+    // Sets the calendar to a specific month
     public void setMonth(int month) {
         calendar.set(Calendar.MONTH, month);
     }
 
+    // Sets the calendar to a specific year
     public void setYear(int year) {
         calendar.set(Calendar.YEAR, year);
     }
 
-    // Get the number of days in the current month
+    // Returns the number of days in the current month
     public int getNumberOfDaysInMonth() {
         return calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
     }
 
-    // Get the first day of the week in the current month (e.g., Sunday, Monday, etc.)
+    // Returns the first day of the week in the current month (e.g., Sunday, Monday)
     public int getFirstDayOfWeekInMonth() {
         Calendar tempCalendar = new GregorianCalendar(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), 1);
         return tempCalendar.get(Calendar.DAY_OF_WEEK);
     }
 
-    // Get the current month
+    // Returns the current month
     public int getMonth() {
         return calendar.get(Calendar.MONTH);
     }
 
-    // Get the current year
+    // Returns the current year
     public int getYear() {
         return calendar.get(Calendar.YEAR);
     }
 
-    // Increment or decrement the month
+    // Changes the current month by a specified amount (e.g., next month, previous month)
     public void changeMonth(int amount) {
         calendar.add(Calendar.MONTH, amount);
     }
 
-    // Method to get the Calendar object
+    // Provides access to the underlying Calendar object
     public Calendar getCalendar() {
         return calendar;
+    }
+
+    // Provides access to the EventStorage instance
+    public EventStorage getEventStorage() {
+        return eventStorage;
     }
 }
