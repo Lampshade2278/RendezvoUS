@@ -1,4 +1,4 @@
-package rendezvoUS;
+package rendezvous;
 //import rendezvoUS.WeeklySchedule;
 
 import java.awt.EventQueue;

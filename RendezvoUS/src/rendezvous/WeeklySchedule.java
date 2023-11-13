@@ -1,4 +1,4 @@
-package rendezvoUS;
+package rendezvous;
 // import rendezvoUS.Day;   Possible class for each day to store events???
 public class WeeklySchedule {
 	

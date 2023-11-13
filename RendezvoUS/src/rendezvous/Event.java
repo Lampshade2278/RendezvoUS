@@ -1,4 +1,4 @@
-package rendezvoUS;
+package rendezvous;
 
 public class Event {
 

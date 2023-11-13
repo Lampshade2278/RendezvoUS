@@ -1,4 +1,4 @@
-package rendezvoUS;
+package rendezvous;
 
 import javax.swing.*;
 import java.awt.*;
