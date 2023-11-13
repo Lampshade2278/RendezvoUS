@@ -1,13 +1,13 @@
 package rendezvous;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class CalendarEvent {
+public class CalendarEvent implements Serializable {
     private String title;
     private Date date;
     private String description;
 
-    // Constructor
     public CalendarEvent(String title, Date date, String description) {
         this.title = title;
         this.date = date;

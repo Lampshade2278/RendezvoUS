@@ -9,13 +9,14 @@ import java.util.Date;
 public class EventDialog extends JDialog {
     private JTextField titleField;
     private JTextArea descriptionField;
-    private JSpinner timeSpinner;
     private JSpinner dateSpinner;
+    private JSpinner timeSpinner;
     private JButton saveButton;
     private JButton cancelButton;
+    private JButton deleteButton;
     private CalendarEvent event;
-    private boolean isEdit;
-    private CalendarModel calendarModel;
+    private final boolean isEdit;
+    private final CalendarModel calendarModel;
 
     public EventDialog(Frame owner, boolean modal, CalendarEvent event, CalendarModel calendarModel, Date eventDate) {
         super(owner, modal);
@@ -23,52 +24,43 @@ public class EventDialog extends JDialog {
         this.isEdit = (event != null);
         this.calendarModel = calendarModel;
 
-        // If editing, use the event's date, otherwise use the provided eventDate
-        Date initialDate = isEdit ? event.getDate() : eventDate;
-
-        initializeUI(initialDate); // Pass the initial date to the UI initialization
+        initializeUI(eventDate);
     }
 
-    private void initializeUI(Date initialDate) {
+    private void initializeUI(Date eventDate) {
         setTitle(isEdit ? "Edit Event" : "Add Event");
         setLayout(new BorderLayout());
         setSize(400, 300);
 
-        // Set the initial values for dateSpinner and timeSpinner
-        dateSpinner.setValue(initialDate);
-        timeSpinner.setValue(initialDate);
-
-        // Event title
         titleField = new JTextField(20);
         titleField.setBorder(BorderFactory.createTitledBorder("Event Title"));
         if (isEdit) titleField.setText(event.getTitle());
 
-        // Event description
         descriptionField = new JTextArea(5, 20);
         descriptionField.setBorder(BorderFactory.createTitledBorder("Event Description"));
         if (isEdit) descriptionField.setText(event.getDescription());
 
-        // Date spinner
         dateSpinner = new JSpinner(new SpinnerDateModel());
         dateSpinner.setBorder(BorderFactory.createTitledBorder("Event Date"));
         JSpinner.DateEditor dateEditor = new JSpinner.DateEditor(dateSpinner, "yyyy/MM/dd");
         dateSpinner.setEditor(dateEditor);
-        if (isEdit) dateSpinner.setValue(event.getDate());
+        dateSpinner.setValue(eventDate);
 
-        // Time spinner
         timeSpinner = new JSpinner(new SpinnerDateModel());
         timeSpinner.setBorder(BorderFactory.createTitledBorder("Event Time"));
         JSpinner.DateEditor timeEditor = new JSpinner.DateEditor(timeSpinner, "HH:mm");
         timeSpinner.setEditor(timeEditor);
-        if (isEdit) timeSpinner.setValue(event.getDate());
+        timeSpinner.setValue(eventDate);
 
-        // Save button
         saveButton = new JButton("Save");
         saveButton.addActionListener(this::saveEvent);
 
-        // Cancel button
         cancelButton = new JButton("Cancel");
         cancelButton.addActionListener(e -> dispose());
+
+        deleteButton = new JButton("Delete");
+        deleteButton.addActionListener(this::deleteEvent);
+        deleteButton.setVisible(isEdit); // Show delete button only when editing
 
         JPanel fieldsPanel = new JPanel(new GridLayout(0, 1));
         fieldsPanel.add(titleField);
@@ -78,6 +70,7 @@ public class EventDialog extends JDialog {
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(saveButton);
+        buttonPanel.add(deleteButton);
         buttonPanel.add(cancelButton);
 
         add(fieldsPanel, BorderLayout.CENTER);
@@ -90,7 +83,6 @@ public class EventDialog extends JDialog {
         Date date = (Date) dateSpinner.getValue();
         Date time = (Date) timeSpinner.getValue();
 
-        // Combine date and time
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         Calendar timeCalendar = Calendar.getInstance();
@@ -104,11 +96,19 @@ public class EventDialog extends JDialog {
             event.setTitle(title);
             event.setDescription(description);
             event.setDate(combinedDateTime);
+            calendarModel.getEventStorage().updateEvent(event);
         } else {
             event = new CalendarEvent(title, combinedDateTime, description);
             calendarModel.getEventStorage().addEvent(event);
         }
 
+        dispose();
+    }
+
+    private void deleteEvent(ActionEvent e) {
+        if (isEdit) {
+            calendarModel.getEventStorage().removeEvent(event);
+        }
         dispose();
     }
 }
