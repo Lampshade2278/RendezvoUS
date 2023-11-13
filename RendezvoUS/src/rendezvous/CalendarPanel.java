@@ -15,13 +15,10 @@ public class CalendarPanel extends JPanel {
     private final CalendarModel calendarModel;
     private JLabel monthLabel;
     private JTable calendarTable;
-    private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
     public CalendarPanel() {
         EventStorage eventStorage = new EventStorage();
-        this.calendarModel = new CalendarModel(eventStorage);
-        // Set calendar to current date
-        this.calendarModel.getCalendar().setTime(new Date());
+        this.calendarModel = new CalendarModel(eventStorage, this);
         initializeUI();
         updateCalendar();
     }
@@ -191,5 +188,9 @@ public class CalendarPanel extends JPanel {
 
     public CalendarModel getCalendarModel() {
         return calendarModel;
+    }
+
+    public void refreshCalendar() {
+        updateCalendar();
     }
 }

@@ -4,10 +4,13 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class CalendarEvent implements Serializable {
+    private static final long serialVersionUID = 1L; // Match this with the expected value
+
     private String title;
     private Date date;
     private String description;
 
+    // Constructor, getters, setters, etc.
     public CalendarEvent(String title, Date date, String description) {
         this.title = title;
         this.date = date;
@@ -36,6 +39,7 @@ public class CalendarEvent implements Serializable {
         this.description = description;
     }
 
-    public void setDate(Date combinedDateTime) {
+    public void setDate(Date newDate) {
+        this.date = newDate;
     }
 }

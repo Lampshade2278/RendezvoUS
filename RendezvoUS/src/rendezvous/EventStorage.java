@@ -32,9 +32,15 @@ public class EventStorage implements Serializable {
         saveEvents();
     }
 
-    public void updateEvent(CalendarEvent updatedEvent) {
-        removeEvent(updatedEvent);
-        addEvent(updatedEvent);
+    public void updateEvent(CalendarEvent oldEvent, Date newDate) {
+        // Remove the old event
+        removeEvent(oldEvent);
+
+        // Create a new event with updated date
+        CalendarEvent newEvent = new CalendarEvent(oldEvent.getTitle(), newDate, oldEvent.getDescription());
+
+        // Add the new event
+        addEvent(newEvent);
     }
 
     public List<CalendarEvent> getEventsByDate(Date date) {

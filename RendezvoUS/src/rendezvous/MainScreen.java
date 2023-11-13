@@ -11,7 +11,7 @@ public class MainScreen extends JFrame {
 
     public MainScreen() {
         setTitle("RendezvoUS");
-        setSize(1024, 768); // Adjust as needed
+        setSize(1024, 768); // Adjust the size as needed
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         initializeUI();
         setLocationRelativeTo(null);
@@ -58,7 +58,7 @@ public class MainScreen extends JFrame {
 
     private void performLogout() {
         setVisible(false);
-        new LoginScreen();
+        new LoginScreen(); // Assuming LoginScreen sets itself visible
     }
 
     public static void main(String[] args) {

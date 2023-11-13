@@ -80,9 +80,11 @@ public class EventDialog extends JDialog {
     private void saveEvent(ActionEvent e) {
         String title = titleField.getText();
         String description = descriptionField.getText();
+
         Date date = (Date) dateSpinner.getValue();
         Date time = (Date) timeSpinner.getValue();
 
+        // Combine date and time into newDate
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         Calendar timeCalendar = Calendar.getInstance();
@@ -90,20 +92,20 @@ public class EventDialog extends JDialog {
         calendar.set(Calendar.HOUR_OF_DAY, timeCalendar.get(Calendar.HOUR_OF_DAY));
         calendar.set(Calendar.MINUTE, timeCalendar.get(Calendar.MINUTE));
 
-        Date combinedDateTime = calendar.getTime();
+        Date newDate = calendar.getTime(); // newDate is now defined
 
         if (isEdit) {
-            event.setTitle(title);
-            event.setDescription(description);
-            event.setDate(combinedDateTime);
-            calendarModel.getEventStorage().updateEvent(event);
+            // Update the event
+            calendarModel.getEventStorage().updateEvent(event, newDate);
         } else {
-            event = new CalendarEvent(title, combinedDateTime, description);
+            // Add a new event
+            event = new CalendarEvent(title, newDate, description);
             calendarModel.getEventStorage().addEvent(event);
         }
 
         dispose();
     }
+
 
     private void deleteEvent(ActionEvent e) {
         if (isEdit) {
