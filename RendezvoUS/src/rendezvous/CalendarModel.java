@@ -44,5 +44,8 @@ public class CalendarModel {
         calendar.add(Calendar.MONTH, amount);
     }
 
-    // ... Add more methods as needed
+    // Method to get the Calendar object
+    public Calendar getCalendar() {
+        return calendar;
+    }
 }
