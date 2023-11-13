@@ -11,9 +11,12 @@ public class MainScreen extends JFrame {
 
     public MainScreen() {
         setTitle("Main Application Window");
-        setSize(800, 600);
+        setSize(800, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
+
+//        setLocationRelativeTo(null); // Center the window
+//        setVisible(true);
 
         // Initialize panels
         calendarPanel = new CalendarPanel();
