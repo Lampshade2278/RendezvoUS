@@ -3,34 +3,40 @@ package rendezvous;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.util.Calendar;
 import java.util.Date;
 
 public class EventDialog extends JDialog {
     private JTextField titleField;
-    private JTextField descriptionField;
+    private JTextArea descriptionField;
+    private JSpinner timeSpinner;
+    private JSpinner dateSpinner;
     private JButton saveButton;
     private JButton cancelButton;
     private CalendarEvent event;
     private boolean isEdit;
-    private Date eventDate; // Date for the event
+    private CalendarModel calendarModel;
 
-    private CalendarModel calendarModel; // Add a CalendarModel field
-
-    // Constructor now takes CalendarModel as an argument
     public EventDialog(Frame owner, boolean modal, CalendarEvent event, CalendarModel calendarModel, Date eventDate) {
         super(owner, modal);
         this.event = event;
         this.isEdit = (event != null);
-        this.calendarModel = calendarModel; // Assign the passed CalendarModel
+        this.calendarModel = calendarModel;
 
-        initializeUI();
+        // If editing, use the event's date, otherwise use the provided eventDate
+        Date initialDate = isEdit ? event.getDate() : eventDate;
+
+        initializeUI(initialDate); // Pass the initial date to the UI initialization
     }
 
-    private void initializeUI() {
+    private void initializeUI(Date initialDate) {
         setTitle(isEdit ? "Edit Event" : "Add Event");
         setLayout(new BorderLayout());
-        setSize(300, 200);
+        setSize(400, 300);
+
+        // Set the initial values for dateSpinner and timeSpinner
+        dateSpinner.setValue(initialDate);
+        timeSpinner.setValue(initialDate);
 
         // Event title
         titleField = new JTextField(20);
@@ -38,47 +44,68 @@ public class EventDialog extends JDialog {
         if (isEdit) titleField.setText(event.getTitle());
 
         // Event description
-        descriptionField = new JTextField(20);
+        descriptionField = new JTextArea(5, 20);
         descriptionField.setBorder(BorderFactory.createTitledBorder("Event Description"));
         if (isEdit) descriptionField.setText(event.getDescription());
 
+        // Date spinner
+        dateSpinner = new JSpinner(new SpinnerDateModel());
+        dateSpinner.setBorder(BorderFactory.createTitledBorder("Event Date"));
+        JSpinner.DateEditor dateEditor = new JSpinner.DateEditor(dateSpinner, "yyyy/MM/dd");
+        dateSpinner.setEditor(dateEditor);
+        if (isEdit) dateSpinner.setValue(event.getDate());
+
+        // Time spinner
+        timeSpinner = new JSpinner(new SpinnerDateModel());
+        timeSpinner.setBorder(BorderFactory.createTitledBorder("Event Time"));
+        JSpinner.DateEditor timeEditor = new JSpinner.DateEditor(timeSpinner, "HH:mm");
+        timeSpinner.setEditor(timeEditor);
+        if (isEdit) timeSpinner.setValue(event.getDate());
+
         // Save button
         saveButton = new JButton("Save");
-        saveButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                saveEvent();
-            }
-        });
+        saveButton.addActionListener(this::saveEvent);
 
         // Cancel button
         cancelButton = new JButton("Cancel");
         cancelButton.addActionListener(e -> dispose());
 
+        JPanel fieldsPanel = new JPanel(new GridLayout(0, 1));
+        fieldsPanel.add(titleField);
+        fieldsPanel.add(descriptionField);
+        fieldsPanel.add(dateSpinner);
+        fieldsPanel.add(timeSpinner);
+
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(saveButton);
         buttonPanel.add(cancelButton);
 
-        add(titleField, BorderLayout.NORTH);
-        add(descriptionField, BorderLayout.CENTER);
+        add(fieldsPanel, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
     }
 
-    private void saveEvent() {
+    private void saveEvent(ActionEvent e) {
         String title = titleField.getText();
         String description = descriptionField.getText();
+        Date date = (Date) dateSpinner.getValue();
+        Date time = (Date) timeSpinner.getValue();
+
+        // Combine date and time
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        Calendar timeCalendar = Calendar.getInstance();
+        timeCalendar.setTime(time);
+        calendar.set(Calendar.HOUR_OF_DAY, timeCalendar.get(Calendar.HOUR_OF_DAY));
+        calendar.set(Calendar.MINUTE, timeCalendar.get(Calendar.MINUTE));
+
+        Date combinedDateTime = calendar.getTime();
 
         if (isEdit) {
             event.setTitle(title);
             event.setDescription(description);
+            event.setDate(combinedDateTime);
         } else {
-            event = new CalendarEvent(title, new Date(), description);
-            calendarModel.getEventStorage().addEvent(event); // Use the calendarModel directly
-        }
-
-        if (!isEdit) {
-            // If not editing, create a new event with the selected date
-            event = new CalendarEvent(title, eventDate, description);
+            event = new CalendarEvent(title, combinedDateTime, description);
             calendarModel.getEventStorage().addEvent(event);
         }
 

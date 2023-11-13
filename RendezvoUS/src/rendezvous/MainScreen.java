@@ -67,13 +67,14 @@ public class MainScreen extends JFrame {
     }
 
     private void openAddEventDialog() {
-        Date currentDate = new Date(); // Current date for the new event
+        Date currentDate = new Date(); // Get the current date
         EventDialog eventDialog = new EventDialog(this, true, null, calendarPanel.getCalendarModel(), currentDate);
         eventDialog.setLocationRelativeTo(this);
         eventDialog.setVisible(true);
 
-        calendarPanel.updateCalendar(); // Refresh the calendar view
+        calendarPanel.updateCalendar(); // Refresh the calendar
     }
+
 
     private void performLogout() {
         // Logic for logout action
