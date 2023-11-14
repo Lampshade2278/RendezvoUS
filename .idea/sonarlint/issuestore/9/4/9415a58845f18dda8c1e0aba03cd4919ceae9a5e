@@ -1,0 +1,21 @@
+
+J
+java:S1948"/Make "calendarModel" transient or serializable.(Ê´œ…şÿÿÿÿ
+W
+java:S3252"AUse static access with "javax.swing.SwingConstants" for "CENTER".(ËÇ£Ä
+P
+java:S1161#":Add the "@Override" annotation above this method signature(ÚÎ€÷
+S
+java:S1854."8Remove this useless assignment to local variable "type".(³ÆƒÜùÿÿÿÿ
+P
+java:S1161)":Add the "@Override" annotation above this method signature(â„Æñ
+D
+java:S1481.")Remove this unused "type" local variable.(³ÆƒÜùÿÿÿÿ
+V
+java:S1161–":Add the "@Override" annotation above this method signature(Ä Ïúüÿÿÿÿ
+T
+java:S3252¬"8Use static access with "java.awt.Frame" for "getFrames".(ìóÙÜùÿÿÿÿ
+T
+java:S3252°"8Use static access with "java.awt.Frame" for "getFrames".(ù÷°‘ıÿÿÿÿ
+O
+java:S3398Ÿ"3Move this method into "CalendarTableMouseListener".(˜”‡„ıÿÿÿÿ
