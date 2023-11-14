@@ -73,6 +73,9 @@ public class MainScreen extends JFrame {
         updateComponentsPostThemeChange();
     }
 
+    public void changeRecurrence(RecurrenceManager.Recurrence theme) {
+    }
+
     // Refresh UI components after theme change
     public void updateComponentsPostThemeChange() {
         mainPanel.revalidate();

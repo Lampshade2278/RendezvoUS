@@ -16,6 +16,7 @@ public class CalendarEvent implements Serializable {
     // Description of the event
     private String description;
 
+
     /**
      * Constructor for CalendarEvent.
      *

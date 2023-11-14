@@ -18,6 +18,7 @@ public class EventDialog extends JDialog {
     private CalendarEvent event;
     private final boolean isEdit;
     private final CalendarModel calendarModel;
+    private MainScreen mainScreen;
 
     public EventDialog(Frame owner, boolean modal, CalendarEvent event, CalendarModel calendarModel, Date eventDate) {
         super(owner, modal);
@@ -29,6 +30,8 @@ public class EventDialog extends JDialog {
         ThemeManager.applyTheme(this.getContentPane(), ThemeManager.getCurrentTheme()); // Apply theme to dialog
     }
 
+
+
     private void initializeUI(Date eventDate) {
         setTitle(isEdit ? "Edit Event" : "Add Event");
         setLayout(new BorderLayout());
@@ -38,7 +41,14 @@ public class EventDialog extends JDialog {
         titleField = createTextField("Event Title", isEdit ? event.getTitle() : "");
         descriptionField = createTextArea("Event Description", isEdit ? event.getDescription() : "");
         dateSpinner = createSpinner("Event Date", eventDate);
-        timeSpinner = createSpinner("Event Time", eventDate);
+
+
+        JComboBox<RecurrenceManager.Recurrence> RecurrenceComboBox = new JComboBox<>(RecurrenceManager.Recurrence.values());
+        RecurrenceComboBox.addActionListener(e -> {
+            RecurrenceManager.Recurrence selectedRecurrence = (RecurrenceManager.Recurrence) RecurrenceComboBox.getSelectedItem();
+            mainScreen.changeRecurrence(selectedRecurrence); // Call changeTheme on MainScreen
+        });
+
 
         // Initialize buttons
         saveButton = createButton("Save", this::saveEvent);
@@ -51,7 +61,9 @@ public class EventDialog extends JDialog {
         fieldsPanel.add(titleField);
         fieldsPanel.add(descriptionField);
         fieldsPanel.add(dateSpinner);
-        fieldsPanel.add(timeSpinner);
+        fieldsPanel.add(new JLabel("Is this Recurring?"));
+        fieldsPanel.add(RecurrenceComboBox);
+
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(saveButton);
@@ -96,13 +108,11 @@ public class EventDialog extends JDialog {
         String title = titleField.getText();
         String description = descriptionField.getText();
         Date date = (Date) dateSpinner.getValue();
-        Date time = (Date) timeSpinner.getValue();
 
         // Combine date and time
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         Calendar timeCalendar = Calendar.getInstance();
-        timeCalendar.setTime(time);
         calendar.set(Calendar.HOUR_OF_DAY, timeCalendar.get(Calendar.HOUR_OF_DAY));
         calendar.set(Calendar.MINUTE, timeCalendar.get(Calendar.MINUTE));
 
@@ -133,7 +143,6 @@ public class EventDialog extends JDialog {
         ThemeManager.applyTheme(titleField, currentTheme);
         ThemeManager.applyTheme(descriptionField, currentTheme);
         ThemeManager.applyTheme(dateSpinner, currentTheme);
-        ThemeManager.applyTheme(timeSpinner, currentTheme);
         ThemeManager.applyTheme(saveButton, currentTheme);
         ThemeManager.applyTheme(cancelButton, currentTheme);
         ThemeManager.applyTheme(deleteButton, currentTheme);
