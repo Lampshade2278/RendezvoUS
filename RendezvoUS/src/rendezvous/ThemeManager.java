@@ -7,7 +7,7 @@ import java.awt.*;
 public class ThemeManager {
 
     public enum Theme {
-        LIGHT, DARK;
+        LIGHT, DARK
     }
 
     private static Theme currentTheme = Theme.LIGHT;
