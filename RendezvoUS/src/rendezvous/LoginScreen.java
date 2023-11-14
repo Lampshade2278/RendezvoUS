@@ -3,96 +3,87 @@ package rendezvous;
 import javax.swing.*;
 import java.awt.*;
 
-// The LoginScreen class provides the user interface for the login process.
 public class LoginScreen {
 
-    private JFrame frame; // Main frame for the login screen
-    private JTextField usernameField; // Text field for username
-    private JPasswordField passwordField; // Password field for password
-    private JLabel loginErrorLabel; // Label to display login errors
+    private JFrame frame;
+    private JTextField usernameField;
+    private JPasswordField passwordField;
+    private JLabel loginErrorLabel;
 
     public LoginScreen() {
-        // Setup the main frame
         frame = new JFrame("RendezvoUS");
-        frame.setSize(1024, 768); // Window size
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Default close operation
-        frame.setLayout(new BorderLayout()); // Layout manager
+        frame.setSize(1024, 768);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLayout(new BorderLayout());
+        frame.setLocationRelativeTo(null);
 
-        frame.setLocationRelativeTo(null); // Center the window on the screen
+        initializeComponents();
+        frame.setVisible(true);
+    }
 
-        // Logo panel at the top
+    private void initializeComponents() {
         JPanel logoPanel = new JPanel();
-        logoPanel.add(new JLabel("LOGO")); // Placeholder for the logo
-        frame.add(logoPanel, BorderLayout.NORTH); // Add logo panel to the top
+        logoPanel.add(new JLabel("LOGO"));
+        frame.add(logoPanel, BorderLayout.NORTH);
 
-        // Center panel for user input fields and buttons
         JPanel centerPanel = new JPanel();
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
 
-        // Panel for username and password fields
         JPanel fieldsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        usernameField = new JTextField(20); // Username field
-        passwordField = new JPasswordField(20); // Password field
-        fieldsPanel.add(new JLabel("Username:")); // Label for username
-        fieldsPanel.add(usernameField); // Add username field
-        fieldsPanel.add(new JLabel("Password:")); // Label for password
-        fieldsPanel.add(passwordField); // Add password field
-        centerPanel.add(fieldsPanel); // Add fields panel to the center panel
+        usernameField = new JTextField(20);
+        passwordField = new JPasswordField(20);
+        fieldsPanel.add(new JLabel("Username:"));
+        fieldsPanel.add(usernameField);
+        fieldsPanel.add(new JLabel("Password:"));
+        fieldsPanel.add(passwordField);
+        centerPanel.add(fieldsPanel);
 
-        // Buttons panel for login and sign up
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         JButton loginButton = new JButton("Login");
-        loginButton.addActionListener(e -> checkLogin()); // Action listener for login
+        loginButton.addActionListener(e -> checkLogin());
         buttonPanel.add(loginButton);
 
         JButton signUpButton = new JButton("Sign Up Here");
-        signUpButton.addActionListener(e -> openSignUpScreen()); // Open sign up dialog
+        signUpButton.addActionListener(e -> openSignUpScreen());
         buttonPanel.add(signUpButton);
 
-        centerPanel.add(buttonPanel); // Add buttons panel to center panel
-        frame.add(centerPanel, BorderLayout.CENTER); // Add center panel to frame
+        centerPanel.add(buttonPanel);
+        frame.add(centerPanel, BorderLayout.CENTER);
 
-        // Label for displaying login error messages
         loginErrorLabel = new JLabel("Incorrect username or password. Try Again.");
-        loginErrorLabel.setForeground(Color.RED); // Set text color to red
-        loginErrorLabel.setVisible(false); // Initially hidden
-        frame.add(loginErrorLabel, BorderLayout.SOUTH); // Add to the bottom of the frame
+        loginErrorLabel.setForeground(Color.RED);
+        loginErrorLabel.setVisible(false);
+        frame.add(loginErrorLabel, BorderLayout.SOUTH);
 
-        frame.setVisible(true); // Make the frame visible
+        ThemeManager.applyTheme(frame, ThemeManager.getCurrentTheme());
     }
 
-    // Method to check login credentials
     private void checkLogin() {
-        // Replace with actual authentication logic
         if ("admin".equals(usernameField.getText()) && "password".equals(new String(passwordField.getPassword()))) {
-            loginErrorLabel.setVisible(false); // Hide error label
-            openMainScreen(); // Open main screen on successful login
+            loginErrorLabel.setVisible(false);
+            openMainScreen();
         } else {
-            loginErrorLabel.setVisible(true); // Show error on failed login
+            loginErrorLabel.setVisible(true);
         }
     }
 
-    // Method to open the main application screen
     private void openMainScreen() {
-        frame.setVisible(false); // Hide the login screen
+        frame.setVisible(false);
         MainScreen mainScreen = new MainScreen();
-        mainScreen.setVisible(true); // Show the main application screen
+        mainScreen.setVisible(true);
     }
 
-    // Method to open the sign-up dialog
     private void openSignUpScreen() {
-        JDialog signUpDialog = new JDialog(frame, "Sign Up", true); // Modal dialog for sign-up
+        JDialog signUpDialog = new JDialog(frame, "Sign Up", true);
         signUpDialog.setLayout(new BorderLayout());
-        signUpDialog.setSize(400, 300); // Size of the sign-up dialog
+        signUpDialog.setSize(400, 300);
 
-        // Form panel for sign-up fields
         JPanel formPanel = new JPanel();
         formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
-        JTextField newUsernameField = new JTextField(20); // Field for new username
-        JPasswordField newPasswordField = new JPasswordField(20); // Field for new password
-        JPasswordField confirmPasswordField = new JPasswordField(20); // Field to confirm password
+        JTextField newUsernameField = new JTextField(20);
+        JPasswordField newPasswordField = new JPasswordField(20);
+        JPasswordField confirmPasswordField = new JPasswordField(20);
 
-        // Add fields to form panel
         formPanel.add(new JLabel("Username:"));
         formPanel.add(newUsernameField);
         formPanel.add(new JLabel("Password (at least 8 characters):"));
@@ -100,15 +91,13 @@ public class LoginScreen {
         formPanel.add(new JLabel("Confirm Password:"));
         formPanel.add(confirmPasswordField);
 
-        // Buttons panel for register and cancel
         JPanel buttonsPanel = new JPanel();
         JButton registerButton = new JButton("Register");
         registerButton.addActionListener(e -> {
-            // Registration logic (password match and length check)
             if (new String(newPasswordField.getPassword()).equals(new String(confirmPasswordField.getPassword()))
                     && new String(newPasswordField.getPassword()).length() >= 8) {
                 JOptionPane.showMessageDialog(signUpDialog, "Registration Successful!");
-                signUpDialog.dispose(); // Close the dialog on successful registration
+                signUpDialog.dispose();
             } else {
                 JOptionPane.showMessageDialog(signUpDialog, "Password does not match or is less than 8 characters.",
                         "Registration Error", JOptionPane.ERROR_MESSAGE);
@@ -117,22 +106,19 @@ public class LoginScreen {
         buttonsPanel.add(registerButton);
 
         JButton cancelButton = new JButton("Cancel");
-        cancelButton.addActionListener(e -> signUpDialog.dispose()); // Close dialog without registration
+        cancelButton.addActionListener(e -> signUpDialog.dispose());
         buttonsPanel.add(cancelButton);
 
-        // Add panels to the dialog
         signUpDialog.add(formPanel, BorderLayout.CENTER);
         signUpDialog.add(buttonsPanel, BorderLayout.SOUTH);
-
-        signUpDialog.setLocationRelativeTo(null); // Center the dialog on the screen
-        signUpDialog.setVisible(true); // Make the dialog visible
+        signUpDialog.setLocationRelativeTo(null);
+        signUpDialog.setVisible(true);
     }
 
     public void setVisible(boolean visible) {
         frame.setVisible(visible);
     }
 
-    // Main method to launch the login screen
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new LoginScreen());
     }
