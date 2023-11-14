@@ -23,7 +23,7 @@ public class LoginScreen {
 
     private void initializeComponents() {
         JPanel logoPanel = new JPanel();
-        ImageIcon logoIcon = new ImageIcon("C:\\Users\\Zac\\IdeaProjects\\RendezvoUS\\RendezvoUS\\bin\\resources\\logo.PNG"); // Ensure the 'resources' directory is correctly located
+        ImageIcon logoIcon = new ImageIcon("RendezvoUS\\bin\\resources\\logo.PNG"); // Ensure the 'resources' directory is correctly located
         JLabel logoLabel = new JLabel(logoIcon);
         logoPanel.add(logoLabel);
         frame.add(logoPanel, BorderLayout.NORTH);
