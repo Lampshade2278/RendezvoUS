@@ -46,6 +46,10 @@ public class ThemeManager {
             component.setBackground(new Color(64, 64, 64));
             component.setForeground(new Color(64, 64, 64));
         }
+        if (component instanceof JComboBox<?>){
+            component.setBackground(new Color(64, 64, 64));
+            component.setForeground(new Color(64, 64, 64)); // Set text color to white for inputs
+        }
         if (component instanceof JSpinner || component instanceof JLabel || component instanceof JTextField || component instanceof JTextArea  || component instanceof JTableHeader) {
             component.setBackground(new Color(64, 64, 64));
             component.setForeground(Color.WHITE); // Set text color to white for inputs
