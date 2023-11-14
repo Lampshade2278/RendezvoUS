@@ -128,6 +128,10 @@ public class LoginScreen {
         signUpDialog.setVisible(true); // Make the dialog visible
     }
 
+    public void setVisible(boolean visible) {
+        frame.setVisible(visible);
+    }
+
     // Main method to launch the login screen
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new LoginScreen());

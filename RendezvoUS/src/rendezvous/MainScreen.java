@@ -3,70 +3,55 @@ package rendezvous;
 import javax.swing.*;
 import java.awt.*;
 
-// MainScreen class extends JFrame to create a window for the application
 public class MainScreen extends JFrame {
-    // CardLayout allows switching between different panels
     private CardLayout cardLayout;
-    // Main panel to hold different screens like Calendar and Dashboard
     private JPanel mainPanel;
-    // CalendarPanel instance for the calendar functionality
     private CalendarPanel calendarPanel;
-    // Placeholder for dashboard, can be replaced with an actual dashboard panel
-    private JPanel dashboardPanel;
+    private SettingsScreen settingsPanel;
 
-    // Constructor of MainScreen
     public MainScreen() {
-        setTitle("RendezvoUS"); // Set the title of the window
-        setSize(1024, 768); // Set the size of the window
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Set default close operation
-        initializeUI(); // Initialize the user interface
-        setLocationRelativeTo(null); // Center the window on the screen
-    }
+        setTitle("RendezvoUS");
+        setSize(1024, 768); // Set window size
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null); // Center the window on screen
 
-    // Initialize the user interface
-    private void initializeUI() {
-        // Initialize the calendar panel
-        calendarPanel = new CalendarPanel();
-        // Initialize the dashboard panel (currently a placeholder)
-        dashboardPanel = new JPanel();
-
-        // Set up the main panel with CardLayout for screen switching
+        // Main panel with CardLayout
         mainPanel = new JPanel();
         cardLayout = new CardLayout();
         mainPanel.setLayout(cardLayout);
-        // Add the calendar and dashboard panels to the main panel
+
+        // Initialize panels
+        calendarPanel = new CalendarPanel();
+        settingsPanel = new SettingsScreen(this); // Pass this MainScreen instance to SettingsScreen
+
+        // Add panels to CardLayout
         mainPanel.add(calendarPanel, "Calendar");
-        mainPanel.add(dashboardPanel, "Dashboard");
+        mainPanel.add(settingsPanel, "Settings");
 
-        // Set up the navigation panel with buttons
-        JPanel navPanel = setupNavigationPanel();
+        // Add navigation panel
+        add(setupNavigationPanel(), BorderLayout.NORTH);
 
-        // Add the navigation and main panels to the JFrame
-        add(navPanel, BorderLayout.NORTH);
+        // Add main panel
         add(mainPanel, BorderLayout.CENTER);
+
+        // Apply default theme (this can be set based on user preferences)
+        ThemeManager.changeTheme(this, ThemeManager.Theme.LIGHT); // Or DARK
+
+        setVisible(true);
     }
 
-    // Set up the navigation panel with buttons and their action listeners
     private JPanel setupNavigationPanel() {
         JPanel navPanel = new JPanel();
         navPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 
-        // Dashboard button to switch to the dashboard screen
-        JButton dashboardButton = new JButton("Dashboard");
-        dashboardButton.addActionListener(e -> cardLayout.show(mainPanel, "Dashboard"));
-        navPanel.add(dashboardButton);
-
-        // Calendar button to switch to the calendar screen
         JButton calendarButton = new JButton("Open Calendar");
         calendarButton.addActionListener(e -> cardLayout.show(mainPanel, "Calendar"));
         navPanel.add(calendarButton);
 
-        // Settings button (functionality can be added later)
         JButton settingsButton = new JButton("Settings");
-        // TODO: Add action listener for settings button
+        settingsButton.addActionListener(e -> cardLayout.show(mainPanel, "Settings"));
         navPanel.add(settingsButton);
 
-        // Logout button to exit the application and return to the login screen
         JButton logoutButton = new JButton("Logout");
         logoutButton.addActionListener(e -> performLogout());
         navPanel.add(logoutButton);
@@ -74,18 +59,26 @@ public class MainScreen extends JFrame {
         return navPanel;
     }
 
-    // Perform logout operation
-    private void performLogout() {
-        setVisible(false); // Hide the MainScreen
-        new LoginScreen(); // Open the LoginScreen
+    // Method to change the theme
+    public void changeTheme(ThemeManager.Theme theme) {
+        ThemeManager.changeTheme(this, theme);
+        updateComponentsPostThemeChange();
     }
 
-    // Main method to run the application
+    // Refresh UI components after theme change
+    public void updateComponentsPostThemeChange() {
+        mainPanel.revalidate();
+        mainPanel.repaint();
+    }
+
+    private void performLogout() {
+        // Logout logic
+        setVisible(false);
+        // Assuming LoginScreen is your login window
+        new LoginScreen().setVisible(true);
+    }
+
     public static void main(String[] args) {
-        // Ensure the UI is created on the Event Dispatch Thread for thread safety
-        SwingUtilities.invokeLater(() -> {
-            MainScreen mainScreen = new MainScreen();
-            mainScreen.setVisible(true); // Make the MainScreen visible
-        });
+        SwingUtilities.invokeLater(() -> new MainScreen());
     }
 }

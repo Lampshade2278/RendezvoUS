@@ -2,80 +2,63 @@ package rendezvous;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 
-public class SettingsScreen {
+public class SettingsScreen extends JPanel {
+    private MainScreen mainScreen;
 
-    public static void main(String[] args) {
-        // Create the main frame
-        JFrame frame = new JFrame("Settings");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(400, 400);
+    public SettingsScreen(MainScreen mainScreen) {
+        this.mainScreen = mainScreen;
+        setLayout(new BorderLayout());
 
-        // Set layout manager
-        frame.setLayout(new BorderLayout());
+        add(createAppearanceSection(), BorderLayout.NORTH);
+        add(createAccountManagementSection(), BorderLayout.CENTER);
+    }
 
-        // Create UI components for the top panel (logo and navigation buttons)
-        JPanel topPanel = new JPanel();
-        JLabel logo = new JLabel("LOGO");
-        JButton dashboardButton = new JButton("Dashboard");
-        JButton groupViewButton = new JButton("Group View");
-        JButton settingsButton = new JButton("Settings");
-        
-        topPanel.add(logo);
-        topPanel.add(dashboardButton);
-        topPanel.add(groupViewButton);
-        topPanel.add(settingsButton);
+    private JPanel createAppearanceSection() {
+        JPanel appearancePanel = new JPanel();
+        appearancePanel.setLayout(new FlowLayout());
+        appearancePanel.add(new JLabel("Appearance:"));
 
-        // Settings components
-        JPanel settingsPanel = new JPanel(new GridLayout(4, 2));
-        
-        JLabel changeUsernameLabel = new JLabel("Change Username");
-        JTextField newUsernameField = new JTextField("New username");
-        JButton changeUsernameButton = new JButton("Go");
+        JComboBox<ThemeManager.Theme> themeComboBox = new JComboBox<>(ThemeManager.Theme.values());
+        themeComboBox.addActionListener(e -> {
+            ThemeManager.Theme selectedTheme = (ThemeManager.Theme) themeComboBox.getSelectedItem();
+            mainScreen.changeTheme(selectedTheme); // Call changeTheme on MainScreen
+        });
+        appearancePanel.add(themeComboBox);
 
-        JLabel changePasswordLabel = new JLabel("Change Password");
-        JPasswordField newPasswordField = new JPasswordField("New Pass");
-        JPasswordField confirmNewPasswordField = new JPasswordField("Confirm New Pass");
-        JButton changePasswordButton = new JButton("Go");
+        return appearancePanel;
+    }
 
-        JLabel changeEmailLabel = new JLabel("Change Email");
-        JTextField newEmailField = new JTextField("New email");
-        JTextField confirmNewEmailField = new JTextField("Confirm New email");
-        JButton changeEmailButton = new JButton("Go");
+    private JPanel createAccountManagementSection() {
+        JPanel accountPanel = new JPanel();
+        accountPanel.setLayout(new FlowLayout());
 
-        JLabel colorBlindModeLabel = new JLabel("Turn on color blind mode");
-        JRadioButton yesRadioButton = new JRadioButton("Yes");
-        JRadioButton noRadioButton = new JRadioButton("No");
-        JButton colorBlindModeButton = new JButton("Go");
+        JButton deleteAccountButton = new JButton("Delete Account");
+        deleteAccountButton.addActionListener(e -> deleteAccount());
+        accountPanel.add(deleteAccountButton);
 
-        // Group the radio buttons.
-        ButtonGroup group = new ButtonGroup();
-        group.add(yesRadioButton);
-        group.add(noRadioButton);
+        JButton sendFeedbackButton = new JButton("Send Feedback");
+        sendFeedbackButton.setEnabled(false); // Disabled as functionality not implemented yet
+        accountPanel.add(sendFeedbackButton);
 
-        settingsPanel.add(changeUsernameLabel);
-        settingsPanel.add(newUsernameField);
-        settingsPanel.add(changePasswordLabel);
-        settingsPanel.add(newPasswordField);
-        settingsPanel.add(confirmNewPasswordField);
-        settingsPanel.add(changeEmailLabel);
-        settingsPanel.add(newEmailField);
-        settingsPanel.add(confirmNewEmailField);
-        settingsPanel.add(colorBlindModeLabel);
-        settingsPanel.add(yesRadioButton);
-        settingsPanel.add(noRadioButton);
+        return accountPanel;
+    }
 
-        // Add the buttons last to ensure they are at the bottom
-        settingsPanel.add(changeUsernameButton);
-        settingsPanel.add(changePasswordButton);
-        settingsPanel.add(changeEmailButton);
-        settingsPanel.add(colorBlindModeButton);
+    private void deleteAccount() {
+        // Placeholder for delete account functionality
+        String username = getCurrentUser();
+        File file = new File(username + ".dat");
+        if (file.delete()) {
+            JOptionPane.showMessageDialog(this, "Account deleted successfully.");
+            System.exit(0); // Exit the application
+        } else {
+            JOptionPane.showMessageDialog(this, "Error deleting account.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
 
-        // Add components to frame
-        frame.add(topPanel, BorderLayout.NORTH);
-        frame.add(settingsPanel, BorderLayout.CENTER);
-
-        // Display the frame
-        frame.setVisible(true);
+    private String getCurrentUser() {
+        // Placeholder method for getting current user's username
+        return "current_user";
     }
 }
