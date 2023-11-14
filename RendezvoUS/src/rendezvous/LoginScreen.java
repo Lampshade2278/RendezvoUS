@@ -14,7 +14,7 @@ public class LoginScreen {
     public LoginScreen() {
         // Setup the main frame
         frame = new JFrame("RendezvoUS");
-        frame.setSize(800, 800); // Window size
+        frame.setSize(1024, 768); // Window size
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Default close operation
         frame.setLayout(new BorderLayout()); // Layout manager
 
