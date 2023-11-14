@@ -2,6 +2,7 @@ package rendezvous;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -11,113 +12,108 @@ import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 
-// CalendarPanel class is responsible for displaying the calendar and handling its functionalities
 public class CalendarPanel extends JPanel {
-    // CalendarModel instance for managing calendar data
     private final CalendarModel calendarModel;
-    // Label to display the current month and year
     private JLabel monthLabel;
-    // Table to display the calendar
     private JTable calendarTable;
 
-    // Constructor
     public CalendarPanel() {
-        EventStorage eventStorage = new EventStorage(); // Event storage for handling events
-        this.calendarModel = new CalendarModel(eventStorage, this); // Initialize CalendarModel with EventStorage
-        initializeUI(); // Initialize user interface components
-        updateCalendar(); // Update calendar display
+        EventStorage eventStorage = new EventStorage();
+        this.calendarModel = new CalendarModel(eventStorage, this);
+        initializeUI();
+        updateCalendar();
     }
 
-    // Initialize UI components
     private void initializeUI() {
         setLayout(new BorderLayout());
 
-        // Month label initialization
         monthLabel = new JLabel("", JLabel.CENTER);
         monthLabel.setFont(new Font("SansSerif", Font.BOLD, 16));
         add(monthLabel, BorderLayout.NORTH);
 
-        // Table model for the calendar
         DefaultTableModel tableModel = new DefaultTableModel() {
             public boolean isCellEditable(int row, int column) {
-                return false; // Make cells non-editable
+                return false;
             }
         };
-        calendarTable = new JTable(tableModel);
-        calendarTable.setRowHeight(120); // Set row height
-        calendarTable.addMouseListener(new CalendarTableMouseListener()); // Add mouse listener for table clicks
-        add(new JScrollPane(calendarTable), BorderLayout.CENTER); // Add table with scroll pane
 
-        setupNavigationButtons(); // Setup navigation buttons
+        calendarTable = new JTable(tableModel) {
+            public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+                Component c = super.prepareRenderer(renderer, row, column);
+                if (!isRowSelected(row)) {
+                    c.setBackground(row % 2 == 0 ? getBackground() : new Color(240, 240, 240));
+                    if (ThemeManager.getCurrentTheme() == ThemeManager.Theme.DARK) {
+                        c.setForeground(Color.WHITE);
+                    } else {
+                        c.setForeground(Color.BLACK);
+                    }
+                }
+                return c;
+            }
+        };
+
+        calendarTable.setRowHeight(120);
+        calendarTable.addMouseListener(new CalendarTableMouseListener());
+        add(new JScrollPane(calendarTable), BorderLayout.CENTER);
+
+        setupNavigationButtons();
     }
 
-    // Setup navigation buttons
     private void setupNavigationButtons() {
         JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-
-        // Button to go to the previous month
         JButton prevButton = new JButton("<");
         prevButton.addActionListener(e -> changeMonth(-1));
         controlPanel.add(prevButton);
 
-        // Button to return to today's date
         JButton todayButton = new JButton("Today");
         todayButton.addActionListener(e -> goToday());
         controlPanel.add(todayButton);
 
-        // Button to go to the next month
         JButton nextButton = new JButton(">");
         nextButton.addActionListener(e -> changeMonth(1));
         controlPanel.add(nextButton);
 
-        add(controlPanel, BorderLayout.SOUTH); // Add control panel to the south of BorderLayout
+        add(controlPanel, BorderLayout.SOUTH);
     }
 
-    // Set calendar to today's date and update display
     private void goToday() {
         calendarModel.getCalendar().setTime(new Date());
         updateCalendar();
     }
 
-    // Change the month by a given amount and update the display
     private void changeMonth(int amount) {
         calendarModel.getCalendar().add(Calendar.MONTH, amount);
         updateCalendar();
     }
 
-    // Update the calendar display
     public void updateCalendar() {
         Calendar cal = (Calendar) calendarModel.getCalendar().clone();
-        cal.set(Calendar.DAY_OF_MONTH, 1); // Set to the first day of the month
-        int firstDayOfWeek = cal.get(Calendar.DAY_OF_WEEK); // Determine the first day of the week
-        int daysInMonth = cal.getActualMaximum(Calendar.DAY_OF_MONTH); // Get the number of days in the month
+        cal.set(Calendar.DAY_OF_MONTH, 1);
+        int firstDayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
+        int daysInMonth = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
 
         DefaultTableModel tableModel = (DefaultTableModel) calendarTable.getModel();
-        tableModel.setRowCount(0); // Clear existing rows
-        tableModel.setColumnCount(7); // Set to 7 columns (days of the week)
+        tableModel.setRowCount(0);
+        tableModel.setColumnCount(7);
 
-        String[] headers = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
-        tableModel.setColumnIdentifiers(headers); // Set column headers
+        String[] headers = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
+        tableModel.setColumnIdentifiers(headers);
 
-        int offset = firstDayOfWeek - Calendar.SUNDAY; // Calculate offset for first day of the month
-        Vector<String> row = new Vector<>(); // Vector to hold a row of data
-
-        // Fill initial empty cells
+        int offset = firstDayOfWeek - Calendar.SUNDAY;
+        Vector<String> row = new Vector<>();
         for (int i = 0; i < offset; i++) {
             row.add("");
         }
 
-        // Fill cells with days of the month and any event summaries
         for (int i = 1; i <= daysInMonth; i++) {
-            row.add(Integer.toString(i) + getEventSummary(cal.getTime())); // Add day and event summary
-            if (row.size() == 7) { // End of the week, add row to table
+            row.add(Integer.toString(i) + getEventSummary(cal.getTime()));
+            if (row.size() == 7) {
                 tableModel.addRow(row);
                 row = new Vector<>();
             }
-            cal.add(Calendar.DAY_OF_MONTH, 1); // Move to the next day
+            cal.add(Calendar.DAY_OF_MONTH, 1);
         }
 
-        // Fill remaining cells if the last week is not complete
         while (row.size() < 7) {
             row.add("");
         }
@@ -125,19 +121,16 @@ public class CalendarPanel extends JPanel {
             tableModel.addRow(row);
         }
 
-        // Update the month and year label
         SimpleDateFormat monthYearFormat = new SimpleDateFormat("MMMM yyyy");
         monthLabel.setText(monthYearFormat.format(calendarModel.getCalendar().getTime()));
     }
 
-    // Get a summary of events for a given date
     private String getEventSummary(Date date) {
         List<CalendarEvent> events = calendarModel.getEventStorage().getEventsByDate(date);
         if (events.isEmpty()) {
-            return ""; // Return empty string if no events
+            return "";
         }
 
-        // Build a summary of events
         StringBuilder eventSummary = new StringBuilder();
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
         for (CalendarEvent event : events) {
@@ -146,9 +139,9 @@ public class CalendarPanel extends JPanel {
             eventSummary.append(eventName).append(" at ").append(eventTime).append(", ");
         }
 
-        // Remove the last comma and space
         if (eventSummary.length() > 0) {
-            eventSummary.setLength(eventSummary.length() - 2);
+            eventSummary.setLength(eventSummary.length() - 2
+            );
         }
 
         return " (" + eventSummary.toString() + ")"; // Return event summary

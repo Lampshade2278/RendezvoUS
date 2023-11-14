@@ -62,3 +62,4 @@ public class SettingsScreen extends JPanel {
         return "current_user";
     }
 }
+

@@ -9,7 +9,14 @@ public class ThemeManager {
         LIGHT, DARK;
     }
 
+    private static Theme currentTheme = Theme.LIGHT; // Default theme
+
+    public static Theme getCurrentTheme() {
+        return currentTheme;
+    }
+
     public static void applyTheme(Component component, Theme theme) {
+        currentTheme = theme; // Update current theme
         switch (theme) {
             case LIGHT:
                 component.setBackground(Color.WHITE);
@@ -21,7 +28,6 @@ public class ThemeManager {
                 if (component instanceof JButton || component instanceof JComboBox || component instanceof JTable) {
                     component.setBackground(new Color(64, 64, 64)); // Medium-dark grey
                     component.setForeground(new Color(64, 64, 64)); // Medium-dark grey
-
                 }
                 break;
         }
@@ -35,9 +41,6 @@ public class ThemeManager {
 
     public static void changeTheme(JFrame frame, Theme theme) {
         applyTheme(frame.getContentPane(), theme);
-        if (frame instanceof MainScreen) {
-            ((MainScreen) frame).updateComponentsPostThemeChange();
-        }
         frame.repaint();
     }
 }
