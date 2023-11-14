@@ -12,7 +12,7 @@ public class LoginScreen {
 
     public LoginScreen() {
         frame = new JFrame("RendezvoUS");
-        frame.setSize(1024, 768);
+        frame.setSize(375, 300);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
         frame.setLocationRelativeTo(null);
@@ -23,7 +23,9 @@ public class LoginScreen {
 
     private void initializeComponents() {
         JPanel logoPanel = new JPanel();
-        logoPanel.add(new JLabel("LOGO"));
+        ImageIcon logoIcon = new ImageIcon("C:\\Users\\Zac\\IdeaProjects\\RendezvoUS\\RendezvoUS\\bin\\resources\\logo.PNG"); // Ensure the 'resources' directory is correctly located
+        JLabel logoLabel = new JLabel(logoIcon);
+        logoPanel.add(logoLabel);
         frame.add(logoPanel, BorderLayout.NORTH);
 
         JPanel centerPanel = new JPanel();
