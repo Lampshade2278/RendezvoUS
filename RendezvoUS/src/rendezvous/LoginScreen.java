@@ -2,14 +2,14 @@ package rendezvous;
 
 import javax.swing.*;
 import java.awt.*;
-//Github push test
+
 public class LoginScreen {
 
     private JFrame frame;
     private JTextField usernameField;
     private JPasswordField passwordField;
     private JLabel loginErrorLabel;
-
+//Testing PUSH to github
     public LoginScreen() {
         frame = new JFrame("RendezvoUS");
         frame.setSize(375, 300);
