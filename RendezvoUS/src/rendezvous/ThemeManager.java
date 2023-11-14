@@ -42,14 +42,11 @@ public class ThemeManager {
     private static void setDarkTheme(Component component) {
         component.setBackground(Color.DARK_GRAY);
 
-        if (component instanceof JButton || component instanceof JTable) {
+        if (component instanceof JButton || component instanceof JTable || component instanceof JComboBox) {
             component.setBackground(new Color(64, 64, 64));
             component.setForeground(new Color(64, 64, 64));
         }
-        if (component instanceof JComboBox || component instanceof J){
-            component.setBackground(new Color(64, 64, 64));
-            component.setBackground(new Color(64, 64, 64));
-        }
+
         if (component instanceof JSpinner || component instanceof JLabel || component instanceof JPasswordField || component instanceof JTextField || component instanceof JTextArea  || component instanceof JTableHeader) {
             component.setBackground(new Color(64, 64, 64));
             component.setForeground(Color.WHITE); // Set text color to white for inputs
