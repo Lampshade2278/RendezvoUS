@@ -41,17 +41,18 @@ public class CalendarPanel extends JPanel {
             public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
                 Component c = super.prepareRenderer(renderer, row, column);
                 if (!isRowSelected(row)) {
-                    c.setBackground(row % 2 == 0 ? getBackground() : new Color(240, 240, 240));
+                    c.setBackground(getBackground());
+                    int modelRow = convertRowIndexToModel(row);
+                    String type = (String) getModel().getValueAt(modelRow, column);
                     if (ThemeManager.getCurrentTheme() == ThemeManager.Theme.DARK) {
-                        c.setForeground(Color.WHITE);
+                        c.setForeground(Color.WHITE); // White text for dark theme
                     } else {
-                        c.setForeground(Color.BLACK);
+                        c.setForeground(Color.BLACK); // Black text for light theme
                     }
                 }
                 return c;
             }
         };
-
         calendarTable.setRowHeight(120);
         calendarTable.addMouseListener(new CalendarTableMouseListener());
         add(new JScrollPane(calendarTable), BorderLayout.CENTER);
@@ -96,11 +97,12 @@ public class CalendarPanel extends JPanel {
         tableModel.setRowCount(0);
         tableModel.setColumnCount(7);
 
-        String[] headers = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
+        String[] headers = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
         tableModel.setColumnIdentifiers(headers);
 
         int offset = firstDayOfWeek - Calendar.SUNDAY;
         Vector<String> row = new Vector<>();
+
         for (int i = 0; i < offset; i++) {
             row.add("");
         }
@@ -134,74 +136,52 @@ public class CalendarPanel extends JPanel {
         StringBuilder eventSummary = new StringBuilder();
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
         for (CalendarEvent event : events) {
-            String eventName = event.getTitle();
-            String eventTime = timeFormat.format(event.getDate());
-            eventSummary.append(eventName).append(" at ").append(eventTime).append(", ");
+            eventSummary.append(event.getTitle()).append(" at ").append(timeFormat.format(event.getDate())).append(", ");
         }
 
         if (eventSummary.length() > 0) {
-            eventSummary.setLength(eventSummary.length() - 2
-            );
+            eventSummary.setLength(eventSummary.length() - 2);
         }
 
-        return " (" + eventSummary.toString() + ")"; // Return event summary
+        return " (" + eventSummary + ")";
     }
 
-    // MouseAdapter class to handle mouse clicks on the calendar
     private class CalendarTableMouseListener extends MouseAdapter {
         public void mouseClicked(MouseEvent e) {
             int row = calendarTable.rowAtPoint(e.getPoint());
             int column = calendarTable.columnAtPoint(e.getPoint());
             if (row >= 0 && column >= 0) {
-                handleDayClick(row, column); // Handle day click
+                handleDayClick(row, column);
             }
         }
     }
 
-    // Handle clicks on specific days in the calendar
     private void handleDayClick(int row, int column) {
         Calendar cal = (Calendar) calendarModel.getCalendar().clone();
         cal.set(Calendar.DAY_OF_MONTH, 1);
         int offset = cal.get(Calendar.DAY_OF_WEEK) - 1;
-        int day = (row * 7 + column) - offset + 1; // Calculate day number
+        int day = (row * 7 + column) - offset + 1;
 
         if (day > 0 && day <= cal.getActualMaximum(Calendar.DAY_OF_MONTH)) {
             cal.set(Calendar.DAY_OF_MONTH, day);
             Date selectedDate = cal.getTime();
 
-            // Check if there are events on this day
             List<CalendarEvent> events = calendarModel.getEventStorage().getEventsByDate(selectedDate);
             if (!events.isEmpty()) {
-                // Edit the first event of the day
                 CalendarEvent firstEvent = events.get(0);
                 EventDialog eventDialog = new EventDialog(JFrame.getFrames()[0], true, firstEvent, calendarModel, selectedDate);
                 eventDialog.setLocationRelativeTo(this);
                 eventDialog.setVisible(true);
             } else {
-                // No events, open dialog to add a new event
                 EventDialog eventDialog = new EventDialog(JFrame.getFrames()[0], true, null, calendarModel, selectedDate);
                 eventDialog.setLocationRelativeTo(this);
                 eventDialog.setVisible(true);
             }
 
-            updateCalendar(); // Refresh the calendar view after closing the dialog
+            updateCalendar();
         }
     }
 
-    // Open a dialog for a specific date to add an event
-    private void openEventDialogForDate(Date date) {
-        EventDialog eventDialog = new EventDialog(JFrame.getFrames()[0], true, null, calendarModel, date);
-        eventDialog.setLocationRelativeTo(this);
-        eventDialog.setVisible(true);
-        updateCalendar(); // Refresh the calendar view
-    }
-
-    // Getter for CalendarModel
-    public CalendarModel getCalendarModel() {
-        return calendarModel;
-    }
-
-    // Refresh the calendar display
     public void refreshCalendar() {
         updateCalendar();
     }

@@ -3,72 +3,50 @@ package rendezvous;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Calendar;
 import java.util.Date;
 
-// EventDialog class provides a dialog box for creating or editing calendar events.
 public class EventDialog extends JDialog {
-    private JTextField titleField; // Field for event title
-    private JTextArea descriptionField; // Area for event description
-    private JSpinner dateSpinner; // Spinner for selecting the event date
-    private JSpinner timeSpinner; // Spinner for selecting the event time
-    private JButton saveButton; // Button to save the event
-    private JButton cancelButton; // Button to cancel the dialog
-    private JButton deleteButton; // Button to delete the event
-    private CalendarEvent event; // The current event being edited or null for a new event
-    private final boolean isEdit; // Indicates if the dialog is for editing an existing event
-    private final CalendarModel calendarModel; // Model of the calendar
+    private JTextField titleField;
+    private JTextArea descriptionField;
+    private JSpinner dateSpinner;
+    private JSpinner timeSpinner;
+    private JButton saveButton;
+    private JButton cancelButton;
+    private JButton deleteButton;
+    private CalendarEvent event;
+    private final boolean isEdit;
+    private final CalendarModel calendarModel;
 
     public EventDialog(Frame owner, boolean modal, CalendarEvent event, CalendarModel calendarModel, Date eventDate) {
         super(owner, modal);
         this.event = event;
-        this.isEdit = (event != null); // Check if an existing event is being edited
-        this.calendarModel = calendarModel; // The calendar model
+        this.isEdit = (event != null);
+        this.calendarModel = calendarModel;
 
-        initializeUI(eventDate); // Initialize the user interface
+        initializeUI(eventDate);
+        ThemeManager.applyTheme(this.getContentPane(), ThemeManager.getCurrentTheme()); // Apply theme to dialog
     }
 
     private void initializeUI(Date eventDate) {
-        setTitle(isEdit ? "Edit Event" : "Add Event"); // Set title based on the mode
+        setTitle(isEdit ? "Edit Event" : "Add Event");
         setLayout(new BorderLayout());
-        setSize(400, 300); // Set the size of the dialog
+        setSize(400, 300);
 
-        // Initialize the title field
-        titleField = new JTextField(20);
-        titleField.setBorder(BorderFactory.createTitledBorder("Event Title"));
-        if (isEdit) titleField.setText(event.getTitle()); // Set text if editing
-
-        // Initialize the description field
-        descriptionField = new JTextArea(5, 20);
-        descriptionField.setBorder(BorderFactory.createTitledBorder("Event Description"));
-        if (isEdit) descriptionField.setText(event.getDescription()); // Set text if editing
-
-        // Initialize the date spinner
-        dateSpinner = new JSpinner(new SpinnerDateModel());
-        dateSpinner.setBorder(BorderFactory.createTitledBorder("Event Date"));
-        JSpinner.DateEditor dateEditor = new JSpinner.DateEditor(dateSpinner, "yyyy/MM/dd");
-        dateSpinner.setEditor(dateEditor);
-        dateSpinner.setValue(eventDate); // Set initial date value
-
-        // Initialize the time spinner
-        timeSpinner = new JSpinner(new SpinnerDateModel());
-        timeSpinner.setBorder(BorderFactory.createTitledBorder("Event Time"));
-        JSpinner.DateEditor timeEditor = new JSpinner.DateEditor(timeSpinner, "HH:mm");
-        timeSpinner.setEditor(timeEditor);
-        timeSpinner.setValue(eventDate); // Set initial time value
+        // Initialize UI components
+        titleField = createTextField("Event Title", isEdit ? event.getTitle() : "");
+        descriptionField = createTextArea("Event Description", isEdit ? event.getDescription() : "");
+        dateSpinner = createSpinner("Event Date", eventDate);
+        timeSpinner = createSpinner("Event Time", eventDate);
 
         // Initialize buttons
-        saveButton = new JButton("Save");
-        saveButton.addActionListener(this::saveEvent);
+        saveButton = createButton("Save", this::saveEvent);
+        cancelButton = createButton("Cancel", e -> dispose());
+        deleteButton = createButton("Delete", this::deleteEvent);
+        deleteButton.setVisible(isEdit);
 
-        cancelButton = new JButton("Cancel");
-        cancelButton.addActionListener(e -> dispose());
-
-        deleteButton = new JButton("Delete");
-        deleteButton.addActionListener(this::deleteEvent);
-        deleteButton.setVisible(isEdit); // Show delete button only when editing
-
-        // Arrange fields and buttons in panels
+        // Layout components
         JPanel fieldsPanel = new JPanel(new GridLayout(0, 1));
         fieldsPanel.add(titleField);
         fieldsPanel.add(descriptionField);
@@ -77,11 +55,40 @@ public class EventDialog extends JDialog {
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(saveButton);
-        buttonPanel.add(deleteButton);
         buttonPanel.add(cancelButton);
+        buttonPanel.add(deleteButton);
 
         add(fieldsPanel, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
+
+        applyCurrentTheme();
+    }
+
+    private JTextField createTextField(String title, String text) {
+        JTextField textField = new JTextField(20);
+        textField.setBorder(BorderFactory.createTitledBorder(title));
+        textField.setText(text);
+        return textField;
+    }
+
+    private JTextArea createTextArea(String title, String text) {
+        JTextArea textArea = new JTextArea(5, 20);
+        textArea.setBorder(BorderFactory.createTitledBorder(title));
+        textArea.setText(text);
+        return textArea;
+    }
+
+    private JSpinner createSpinner(String title, Date value) {
+        JSpinner spinner = new JSpinner(new SpinnerDateModel());
+        spinner.setBorder(BorderFactory.createTitledBorder(title));
+        spinner.setValue(value);
+        return spinner;
+    }
+
+    private JButton createButton(String text, ActionListener actionListener) {
+        JButton button = new JButton(text);
+        button.addActionListener(actionListener);
+        return button;
     }
 
     private void saveEvent(ActionEvent e) {
@@ -119,5 +126,16 @@ public class EventDialog extends JDialog {
             calendarModel.getEventStorage().removeEvent(event);
         }
         dispose(); // Close the dialog
+    }
+
+    private void applyCurrentTheme() {
+        ThemeManager.Theme currentTheme = ThemeManager.getCurrentTheme();
+        ThemeManager.applyTheme(titleField, currentTheme);
+        ThemeManager.applyTheme(descriptionField, currentTheme);
+        ThemeManager.applyTheme(dateSpinner, currentTheme);
+        ThemeManager.applyTheme(timeSpinner, currentTheme);
+        ThemeManager.applyTheme(saveButton, currentTheme);
+        ThemeManager.applyTheme(cancelButton, currentTheme);
+        ThemeManager.applyTheme(deleteButton, currentTheme);
     }
 }
