@@ -11,11 +11,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Vector;
+import javax.swing.table.DefaultTableCellRenderer;
 
 public class CalendarPanel extends JPanel {
     private final CalendarModel calendarModel;
     private JLabel monthLabel;
     private JTable calendarTable;
+    public Image backgroundImage;
 
     // Assume that this username is the currently logged-in user's username
     private String username = "current_user"; // Replace with the actual username
@@ -24,6 +26,7 @@ public class CalendarPanel extends JPanel {
         // Pass the username to the EventStorage constructor
         EventStorage eventStorage = new EventStorage(username);
         this.calendarModel = new CalendarModel(eventStorage, this);
+        backgroundImage = new ImageIcon("RendezvoUS\\bin\\resources\\LOGO2.png").getImage();
         initializeUI();
         updateCalendar();
     }
@@ -42,6 +45,7 @@ public class CalendarPanel extends JPanel {
         };
 
         calendarTable = new JTable(tableModel) {
+            @Override
             public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
                 Component c = super.prepareRenderer(renderer, row, column);
                 if (!isRowSelected(row)) {
@@ -56,10 +60,22 @@ public class CalendarPanel extends JPanel {
                 }
                 return c;
             }
+
+            @Override
+            public TableCellRenderer getCellRenderer(int row, int column) {
+                return new CalendarCellRenderer();
+            }
+
         };
+
         calendarTable.setRowHeight(120);
+        calendarTable.setOpaque(false);
         calendarTable.addMouseListener(new CalendarTableMouseListener());
-        add(new JScrollPane(calendarTable), BorderLayout.CENTER);
+
+        JScrollPane scrollPane = new JScrollPane(calendarTable);
+        scrollPane.setOpaque(false);
+        scrollPane.getViewport().setOpaque(false);
+        add(scrollPane, BorderLayout.CENTER);
 
         setupNavigationButtons();
     }
@@ -70,7 +86,7 @@ public class CalendarPanel extends JPanel {
         prevButton.addActionListener(e -> changeMonth(-1));
         controlPanel.add(prevButton);
 
-        JButton todayButton = new JButton("Today");
+        JButton todayButton = new JButton("Current Month");
         todayButton.addActionListener(e -> goToday());
         controlPanel.add(todayButton);
 
@@ -79,6 +95,22 @@ public class CalendarPanel extends JPanel {
         controlPanel.add(nextButton);
 
         add(controlPanel, BorderLayout.SOUTH);
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.setOpaque(false);
+        super.paintComponent(g);
+        // Draw the background image
+        int x = (this.getWidth() - backgroundImage.getWidth(null)) / 2;
+        int y = (this.getHeight() - backgroundImage.getHeight(null)) / 2;
+
+        if (backgroundImage != null) {
+            g.drawImage(backgroundImage, x, y, this);
+
+
+        }
+
     }
 
     private void goToday() {
@@ -183,10 +215,22 @@ public class CalendarPanel extends JPanel {
             }
 
             updateCalendar();
+
         }
     }
 
     public void refreshCalendar() {
         updateCalendar();
+    }
+    private class CalendarCellRenderer extends DefaultTableCellRenderer {
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value,
+                                                       boolean isSelected, boolean hasFocus, int row, int column) {
+            super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            setHorizontalAlignment(JLabel.LEFT);
+            setVerticalAlignment(JLabel.TOP);
+            setOpaque(false);
+            return this;
+        }
     }
 }

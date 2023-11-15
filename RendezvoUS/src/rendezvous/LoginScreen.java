@@ -12,7 +12,7 @@ public class LoginScreen {
 
     public LoginScreen() {
         frame = new JFrame("RendezvoUS");
-        frame.setSize(1024, 768);
+        frame.setSize(330, 300);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
         frame.setLocationRelativeTo(null);
@@ -22,8 +22,24 @@ public class LoginScreen {
     }
 
     private void initializeComponents() {
+        // Create a panel to hold the logo
         JPanel logoPanel = new JPanel();
-        logoPanel.add(new JLabel("LOGO"));
+
+        // Load the logo image icon from a file
+        ImageIcon logoIcon = new ImageIcon("RendezvoUS\\bin\\resources\\LOGO.png"); // Ensure the 'resources' directory is correctly located
+
+        // Resize the logo to the desired dimensions
+        Image logoImage = logoIcon.getImage();
+        Image newImg = logoImage.getScaledInstance(190, 130, Image.SCALE_SMOOTH); // Replace 100, 100 with the desired width and height
+        logoIcon = new ImageIcon(newImg); // Transform it back into an ImageIcon
+
+        // Create a label to hold the resized logo
+        JLabel logoLabel = new JLabel(logoIcon);
+
+        // Add the label to the logo panel
+        logoPanel.add(logoLabel);
+
+        // Add the logo panel to the frame's north position
         frame.add(logoPanel, BorderLayout.NORTH);
 
         JPanel centerPanel = new JPanel();
@@ -55,6 +71,7 @@ public class LoginScreen {
         loginErrorLabel.setVisible(false);
         frame.add(loginErrorLabel, BorderLayout.SOUTH);
 
+
         ThemeManager.applyTheme(frame, ThemeManager.getCurrentTheme());
     }
 
@@ -85,24 +102,51 @@ public class LoginScreen {
         mainScreen.setVisible(true);
     }
     private void openSignUpScreen() {
+
         JDialog signUpDialog = new JDialog(frame, "Sign Up", true);
         signUpDialog.setLayout(new BorderLayout());
-        signUpDialog.setSize(400, 300);
+        signUpDialog.setSize(400, 340);
+
+
+        JPanel logoPanel2 = new JPanel();
+
+        // Load the logo image icon from a file
+        ImageIcon logoIcon = new ImageIcon("RendezvoUS\\bin\\resources\\LOGO.png"); // Ensure the 'resources' directory is correctly located
+
+        // Resize the logo to the desired dimensions
+        Image logoImage = logoIcon.getImage();
+        Image newImg = logoImage.getScaledInstance(150, 100, Image.SCALE_SMOOTH); // Replace 100, 100 with the desired width and height
+        logoIcon = new ImageIcon(newImg); // Transform it back into an ImageIcon
+
+        // Create a label to hold the resized logo
+        JLabel logoLabel = new JLabel(logoIcon);
+
+        // Add the label to the logo panel
+        logoPanel2.add(logoLabel);
+
+        // Add the logo panel to the frame's north position
 
         JPanel formPanel = new JPanel();
-        formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
+        formPanel.setLayout(new GridLayout(0, 1, 1, 1));
+        formPanel.setBorder(BorderFactory.createEmptyBorder(10, 30, 10, 30));
         JTextField newUsernameField = new JTextField(20);
         JPasswordField newPasswordField = new JPasswordField(20);
         JPasswordField confirmPasswordField = new JPasswordField(20);
 
         formPanel.add(new JLabel("Username:"));
         formPanel.add(newUsernameField);
-        formPanel.add(new JLabel("Password (at least 8 characters):"));
+        formPanel.add(new JLabel("Password: (At Least 8 Characters)"));
         formPanel.add(newPasswordField);
         formPanel.add(new JLabel("Confirm Password:"));
         formPanel.add(confirmPasswordField);
 
-        JPanel buttonsPanel = new JPanel();
+
+
+        JPanel centerPanel = new JPanel();
+        centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
+
+
+        JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         JButton registerButton = new JButton("Register");
         registerButton.addActionListener(e -> {
             // Placeholder for registration logic
@@ -117,13 +161,23 @@ public class LoginScreen {
         });
         buttonsPanel.add(registerButton);
 
+        signUpDialog.add(centerPanel, BorderLayout.CENTER);
+
+
         JButton cancelButton = new JButton("Cancel");
         cancelButton.addActionListener(e -> signUpDialog.dispose());
         buttonsPanel.add(cancelButton);
 
+        JPanel bottomBuffer = new JPanel();
+        bottomBuffer.setPreferredSize(new Dimension(frame.getWidth(), 20)); // Height of 20 pixels for the buffer
+        bottomBuffer.setOpaque(false); // Make it transparent
+
+        signUpDialog.add(logoPanel2, BorderLayout.NORTH);
         signUpDialog.add(formPanel, BorderLayout.CENTER);
         signUpDialog.add(buttonsPanel, BorderLayout.SOUTH);
         signUpDialog.setLocationRelativeTo(null);
+        signUpDialog.pack();
+        ThemeManager.applyTheme(signUpDialog, ThemeManager.getCurrentTheme());
         signUpDialog.setVisible(true);
     }
 
@@ -135,4 +189,3 @@ public class LoginScreen {
         SwingUtilities.invokeLater(() -> new LoginScreen());
     }
 }
-

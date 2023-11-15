@@ -8,6 +8,7 @@ public class MainScreen extends JFrame {
     private JPanel mainPanel;
     private CalendarPanel calendarPanel;
     private SettingsScreen settingsPanel;
+    private GroupSettings groupPanel;
 
     public MainScreen() {
         setTitle("RendezvoUS");
@@ -23,10 +24,13 @@ public class MainScreen extends JFrame {
         // Initialize panels
         calendarPanel = new CalendarPanel();
         settingsPanel = new SettingsScreen(this); // Pass this MainScreen instance to SettingsScreen
+        groupPanel = new GroupSettings(this);
 
         // Add panels to CardLayout
         mainPanel.add(calendarPanel, "Calendar");
         mainPanel.add(settingsPanel, "Settings");
+        mainPanel.add(groupPanel, "Group");
+
 
         // Add navigation panel
         add(setupNavigationPanel(), BorderLayout.NORTH);
@@ -44,9 +48,13 @@ public class MainScreen extends JFrame {
         JPanel navPanel = new JPanel();
         navPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 
-        JButton calendarButton = new JButton("Open Calendar");
+        JButton calendarButton = new JButton("Calendar");
         calendarButton.addActionListener(e -> cardLayout.show(mainPanel, "Calendar"));
         navPanel.add(calendarButton);
+
+        JButton groupButton = new JButton("Group");
+        groupButton.addActionListener(e -> cardLayout.show(mainPanel, "Group"));
+        navPanel.add(groupButton);
 
         JButton settingsButton = new JButton("Settings");
         settingsButton.addActionListener(e -> cardLayout.show(mainPanel, "Settings"));
@@ -65,10 +73,14 @@ public class MainScreen extends JFrame {
         updateComponentsPostThemeChange();
     }
 
+    public void changeRecurrence(RecurrenceManager.Recurrence theme) {
+    }
+
     // Refresh UI components after theme change
     public void updateComponentsPostThemeChange() {
         mainPanel.revalidate();
         mainPanel.repaint();
+        mainPanel.setOpaque(false);
     }
 
     private void performLogout() {
