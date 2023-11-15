@@ -59,7 +59,13 @@ public class LoginScreen {
     }
 
     private void checkLogin() {
-        if ("admin".equals(usernameField.getText()) && "password".equals(new String(passwordField.getPassword()))) {
+        String username = usernameField.getText();
+        String password = new String(passwordField.getPassword());
+
+        // Placeholder for user authentication logic
+        boolean isAuthenticated = authenticateUser(username, password);
+
+        if (isAuthenticated) {
             loginErrorLabel.setVisible(false);
             openMainScreen();
         } else {
@@ -67,12 +73,17 @@ public class LoginScreen {
         }
     }
 
+    private boolean authenticateUser(String username, String password) {
+        // Implement the logic to authenticate user here
+        // For now, we are just checking against a hardcoded value
+        return "admin".equals(username) && "password".equals(password);
+    }
+
     private void openMainScreen() {
         frame.setVisible(false);
         MainScreen mainScreen = new MainScreen();
         mainScreen.setVisible(true);
     }
-
     private void openSignUpScreen() {
         JDialog signUpDialog = new JDialog(frame, "Sign Up", true);
         signUpDialog.setLayout(new BorderLayout());
@@ -94,6 +105,7 @@ public class LoginScreen {
         JPanel buttonsPanel = new JPanel();
         JButton registerButton = new JButton("Register");
         registerButton.addActionListener(e -> {
+            // Placeholder for registration logic
             if (new String(newPasswordField.getPassword()).equals(new String(confirmPasswordField.getPassword()))
                     && new String(newPasswordField.getPassword()).length() >= 8) {
                 JOptionPane.showMessageDialog(signUpDialog, "Registration Successful!");
@@ -123,3 +135,4 @@ public class LoginScreen {
         SwingUtilities.invokeLater(() -> new LoginScreen());
     }
 }
+

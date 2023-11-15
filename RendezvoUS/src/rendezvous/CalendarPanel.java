@@ -17,8 +17,12 @@ public class CalendarPanel extends JPanel {
     private JLabel monthLabel;
     private JTable calendarTable;
 
+    // Assume that this username is the currently logged-in user's username
+    private String username = "current_user"; // Replace with the actual username
+
     public CalendarPanel() {
-        EventStorage eventStorage = new EventStorage();
+        // Pass the username to the EventStorage constructor
+        EventStorage eventStorage = new EventStorage(username);
         this.calendarModel = new CalendarModel(eventStorage, this);
         initializeUI();
         updateCalendar();
