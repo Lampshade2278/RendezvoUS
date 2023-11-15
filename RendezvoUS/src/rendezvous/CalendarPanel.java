@@ -16,10 +16,11 @@ public class CalendarPanel extends JPanel {
     private final CalendarModel calendarModel;
     private JLabel monthLabel;
     private JTable calendarTable;
-
+    public Image backgroundImage;
     public CalendarPanel() {
         EventStorage eventStorage = new EventStorage();
         this.calendarModel = new CalendarModel(eventStorage, this);
+        backgroundImage = new ImageIcon("RendezvoUS\\bin\\resources\\LOGO2.png").getImage();
         initializeUI();
         updateCalendar();
     }
@@ -40,6 +41,7 @@ public class CalendarPanel extends JPanel {
         calendarTable = new JTable(tableModel) {
             public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
                 Component c = super.prepareRenderer(renderer, row, column);
+                ((JComponent) c).setOpaque(false);
                 if (!isRowSelected(row)) {
                     c.setBackground(getBackground());
                     int modelRow = convertRowIndexToModel(row);
@@ -55,7 +57,13 @@ public class CalendarPanel extends JPanel {
         };
         calendarTable.setRowHeight(120);
         calendarTable.addMouseListener(new CalendarTableMouseListener());
+        calendarTable.setOpaque(false);
         add(new JScrollPane(calendarTable), BorderLayout.CENTER);
+        JScrollPane scrollPane = new JScrollPane(calendarTable);
+        scrollPane.setOpaque(false);
+        scrollPane.getViewport().setOpaque(false);
+
+        add(scrollPane, BorderLayout.CENTER);
 
         setupNavigationButtons();
     }
@@ -75,6 +83,22 @@ public class CalendarPanel extends JPanel {
         controlPanel.add(nextButton);
 
         add(controlPanel, BorderLayout.SOUTH);
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.setOpaque(false);
+        super.paintComponent(g);
+        // Draw the background image
+        int x = (this.getWidth() - backgroundImage.getWidth(null)) / 2;
+        int y = (this.getHeight() - backgroundImage.getHeight(null)) / 2;
+
+        if (backgroundImage != null) {
+            g.drawImage(backgroundImage, x, y, this);
+
+
+        }
+
     }
 
     private void goToday() {
@@ -179,6 +203,7 @@ public class CalendarPanel extends JPanel {
             }
 
             updateCalendar();
+
         }
     }
 

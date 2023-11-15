@@ -80,6 +80,7 @@ public class MainScreen extends JFrame {
     public void updateComponentsPostThemeChange() {
         mainPanel.revalidate();
         mainPanel.repaint();
+        mainPanel.setOpaque(false);
     }
 
     private void performLogout() {
