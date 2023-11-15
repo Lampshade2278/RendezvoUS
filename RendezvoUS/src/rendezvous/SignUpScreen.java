@@ -5,42 +5,30 @@ import java.awt.*;
 public class SignUpScreen {
 
     private JFrame frame;
-    private JPanel panel;
-    private JTextField firstNameField, lastNameField, emailField, passwordField, confirmPasswordField;
-    private JLabel logoLabel, titleLabel, firstNameLabel, lastNameLabel, emailLabel, passwordLabel, confirmPasswordLabel;
+    private JTextField usernameField;
+    private JPasswordField passwordField, confirmPasswordField;
+    private JLabel logoLabel, titleLabel, usernameLabel, passwordLabel, confirmPasswordLabel;
     private JButton signUpButton;
 
     public SignUpScreen() {
-        frame = new JFrame("RendezvoUS - Sign Up");
+        frame = new JFrame("RendezvoUS - Registration");
         frame.setSize(400, 400);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        panel = new JPanel(new GridLayout(6, 2));
-        frame.add(panel);
+        JPanel panel = new JPanel(new GridLayout(4, 2));
+        frame.add(panel, BorderLayout.CENTER);
 
         // Logo and Title
         logoLabel = new JLabel("LOGO", SwingConstants.CENTER);
-        titleLabel = new JLabel("Title of Screen", SwingConstants.CENTER);
+        titleLabel = new JLabel("Sign Up", SwingConstants.CENTER);
         frame.add(logoLabel, BorderLayout.NORTH);
         frame.add(titleLabel, BorderLayout.SOUTH);
 
-        // First Name
-        firstNameLabel = new JLabel("First Name: ");
-        firstNameField = new JTextField(20);
-        panel.add(firstNameLabel);
-        panel.add(firstNameField);
-
-        // Last Name
-        lastNameLabel = new JLabel("Last Name: ");
-        lastNameField = new JTextField(20);
-        panel.add(lastNameLabel);
-        panel.add(lastNameField);
-
-        // Email
-        emailLabel = new JLabel("Email: ");
-        emailField = new JTextField(20);
-        panel.add(emailLabel);
-        panel.add(emailField);
+        // Username
+        usernameLabel = new JLabel("Username: ");
+        usernameField = new JTextField(20);
+        panel.add(usernameLabel);
+        panel.add(usernameField);
 
         // Password
         passwordLabel = new JLabel("Password: ");
@@ -56,9 +44,26 @@ public class SignUpScreen {
 
         // Sign Up Button
         signUpButton = new JButton("Sign Up");
+        signUpButton.addActionListener(e -> registerUser());
         frame.add(signUpButton, BorderLayout.SOUTH);
 
         frame.setVisible(true);
+    }
+
+    private void registerUser() {
+        String username = usernameField.getText();
+        String password = new String(passwordField.getPassword());
+        String confirmPassword = new String(confirmPasswordField.getPassword());
+
+        if (password.equals(confirmPassword)) {
+            // Save user account
+            UserAccount newUserAccount = new UserAccount(username, password);
+            UserDataManager.saveUserAccount(newUserAccount); // Save to .dat file
+            JOptionPane.showMessageDialog(frame, "Registration Successful!");
+            frame.dispose();
+        } else {
+            JOptionPane.showMessageDialog(frame, "Password does not match.", "Registration Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     public static void main(String[] args) {
