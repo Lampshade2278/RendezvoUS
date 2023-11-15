@@ -11,12 +11,14 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Vector;
+import javax.swing.table.DefaultTableCellRenderer;
 
 public class CalendarPanel extends JPanel {
     private final CalendarModel calendarModel;
     private JLabel monthLabel;
     private JTable calendarTable;
     public Image backgroundImage;
+
     public CalendarPanel() {
         EventStorage eventStorage = new EventStorage();
         this.calendarModel = new CalendarModel(eventStorage, this);
@@ -39,9 +41,9 @@ public class CalendarPanel extends JPanel {
         };
 
         calendarTable = new JTable(tableModel) {
+            @Override
             public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
                 Component c = super.prepareRenderer(renderer, row, column);
-                ((JComponent) c).setOpaque(false);
                 if (!isRowSelected(row)) {
                     c.setBackground(getBackground());
                     int modelRow = convertRowIndexToModel(row);
@@ -54,15 +56,21 @@ public class CalendarPanel extends JPanel {
                 }
                 return c;
             }
+
+            @Override
+            public TableCellRenderer getCellRenderer(int row, int column) {
+                return new CalendarCellRenderer();
+            }
+
         };
+
         calendarTable.setRowHeight(120);
-        calendarTable.addMouseListener(new CalendarTableMouseListener());
         calendarTable.setOpaque(false);
-        add(new JScrollPane(calendarTable), BorderLayout.CENTER);
+        calendarTable.addMouseListener(new CalendarTableMouseListener());
+
         JScrollPane scrollPane = new JScrollPane(calendarTable);
         scrollPane.setOpaque(false);
         scrollPane.getViewport().setOpaque(false);
-
         add(scrollPane, BorderLayout.CENTER);
 
         setupNavigationButtons();
@@ -209,5 +217,16 @@ public class CalendarPanel extends JPanel {
 
     public void refreshCalendar() {
         updateCalendar();
+    }
+    private class CalendarCellRenderer extends DefaultTableCellRenderer {
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value,
+                                                       boolean isSelected, boolean hasFocus, int row, int column) {
+            super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            setHorizontalAlignment(JLabel.LEFT);
+            setVerticalAlignment(JLabel.TOP);
+            setOpaque(false);
+            return this;
+        }
     }
 }

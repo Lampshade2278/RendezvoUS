@@ -6,6 +6,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Calendar;
 import java.util.Date;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 
 public class EventDialog extends JDialog {
     private JTextField titleField;
@@ -35,7 +37,10 @@ public class EventDialog extends JDialog {
     private void initializeUI(Date eventDate) {
         setTitle(isEdit ? "Edit Event" : "Add Event");
         setLayout(new BorderLayout());
-        setSize(400, 300);
+        setSize(300, 400);
+        int marginSize = 10;
+        Border margin = new EmptyBorder(marginSize, marginSize, marginSize, marginSize);
+
 
         // Initialize UI components
         titleField = createTextField("Event Title", isEdit ? event.getTitle() : "");
@@ -57,7 +62,8 @@ public class EventDialog extends JDialog {
         deleteButton.setVisible(isEdit);
 
         // Layout components
-        JPanel fieldsPanel = new JPanel(new GridLayout(0, 1));
+        JPanel fieldsPanel = new JPanel(new GridLayout(0, 1, marginSize, marginSize));
+        fieldsPanel.setBorder(margin);
         fieldsPanel.add(titleField);
         fieldsPanel.add(descriptionField);
         fieldsPanel.add(dateSpinner);
@@ -72,6 +78,8 @@ public class EventDialog extends JDialog {
 
         add(fieldsPanel, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
+
+
 
         applyCurrentTheme();
     }
@@ -92,8 +100,15 @@ public class EventDialog extends JDialog {
 
     private JSpinner createSpinner(String title, Date value) {
         JSpinner spinner = new JSpinner(new SpinnerDateModel());
-        spinner.setBorder(BorderFactory.createTitledBorder(title));
         spinner.setValue(value);
+
+        // Set the titled border with the label "Event Date"
+        spinner.setBorder(BorderFactory.createTitledBorder(title));
+
+        // Align the text to the left
+        JSpinner.DefaultEditor spinnerEditor = (JSpinner.DefaultEditor) spinner.getEditor();
+        spinnerEditor.getTextField().setHorizontalAlignment(JTextField.LEFT);
+
         return spinner;
     }
 
@@ -146,5 +161,7 @@ public class EventDialog extends JDialog {
         ThemeManager.applyTheme(saveButton, currentTheme);
         ThemeManager.applyTheme(cancelButton, currentTheme);
         ThemeManager.applyTheme(deleteButton, currentTheme);
+
+
     }
 }
