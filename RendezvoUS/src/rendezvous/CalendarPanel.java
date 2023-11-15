@@ -22,7 +22,7 @@ public class CalendarPanel extends JPanel {
     public CalendarPanel() {
         EventStorage eventStorage = new EventStorage();
         this.calendarModel = new CalendarModel(eventStorage, this);
-        backgroundImage = new ImageIcon("RendezvoUS/bin/resources/LOGO2.png").getImage();
+        backgroundImage = new ImageIcon("RendezvoUS/bin/resources/LOGO21.png").getImage();
         initializeUI();
         updateCalendar();
     }
