@@ -10,7 +10,7 @@ public class EventStorage implements Serializable {
     private static final Logger LOGGER = Logger.getLogger(EventStorage.class.getName());
     private static final String STORAGE_FILE = "event_storage.dat";
 
-    public EventStorage() {
+    public EventStorage(String fileName) {
         events = new HashMap<>();
         loadEvents();
     }
