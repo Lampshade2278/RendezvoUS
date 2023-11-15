@@ -22,10 +22,24 @@ public class LoginScreen {
     }
 
     private void initializeComponents() {
+        // Create a panel to hold the logo
         JPanel logoPanel = new JPanel();
-        ImageIcon logoIcon = new ImageIcon("RendezvoUS\\bin\\resources\\logo.PNG"); // Ensure the 'resources' directory is correctly located
+
+        // Load the logo image icon from a file
+        ImageIcon logoIcon = new ImageIcon("RendezvoUS\\bin\\resources\\LOGO.png"); // Ensure the 'resources' directory is correctly located
+
+        // Resize the logo to the desired dimensions
+        Image logoImage = logoIcon.getImage();
+        Image newImg = logoImage.getScaledInstance(200, 130, Image.SCALE_SMOOTH); // Replace 100, 100 with the desired width and height
+        logoIcon = new ImageIcon(newImg); // Transform it back into an ImageIcon
+
+        // Create a label to hold the resized logo
         JLabel logoLabel = new JLabel(logoIcon);
+
+        // Add the label to the logo panel
         logoPanel.add(logoLabel);
+
+        // Add the logo panel to the frame's north position
         frame.add(logoPanel, BorderLayout.NORTH);
 
         JPanel centerPanel = new JPanel();

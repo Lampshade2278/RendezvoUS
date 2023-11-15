@@ -66,7 +66,7 @@ public class CalendarPanel extends JPanel {
         prevButton.addActionListener(e -> changeMonth(-1));
         controlPanel.add(prevButton);
 
-        JButton todayButton = new JButton("Today");
+        JButton todayButton = new JButton("Current Month");
         todayButton.addActionListener(e -> goToday());
         controlPanel.add(todayButton);
 

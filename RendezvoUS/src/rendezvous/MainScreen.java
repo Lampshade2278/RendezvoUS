@@ -48,7 +48,7 @@ public class MainScreen extends JFrame {
         JPanel navPanel = new JPanel();
         navPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 
-        JButton calendarButton = new JButton("Open Calendar");
+        JButton calendarButton = new JButton("Calendar");
         calendarButton.addActionListener(e -> cardLayout.show(mainPanel, "Calendar"));
         navPanel.add(calendarButton);
 
