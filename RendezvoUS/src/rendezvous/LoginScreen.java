@@ -76,7 +76,14 @@ public class LoginScreen {
     }
 
     private void checkLogin() {
-        if ("admin".equals(usernameField.getText()) && "password".equals(new String(passwordField.getPassword()))) {
+        String username = usernameField.getText();
+        String password = new String(passwordField.getPassword());
+
+        // Load the user account from the .dat file
+        UserAccount userAccount = UserDataManager.loadUserAccount(username);
+
+        // Check if the user account exists and the password matches
+        if (userAccount != null && userAccount.getPassword().equals(password)) {
             loginErrorLabel.setVisible(false);
             openMainScreen();
         } else {
@@ -138,8 +145,13 @@ public class LoginScreen {
         JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         JButton registerButton = new JButton("Register");
         registerButton.addActionListener(e -> {
-            if (new String(newPasswordField.getPassword()).equals(new String(confirmPasswordField.getPassword()))
-                    && new String(newPasswordField.getPassword()).length() >= 8) {
+            String newUsername = newUsernameField.getText();
+            String newPassword = new String(newPasswordField.getPassword());
+            String confirmPassword = new String(confirmPasswordField.getPassword());
+
+            if (newPassword.equals(confirmPassword) && newPassword.length() >= 8) {
+                UserAccount newUserAccount = new UserAccount(newUsername, newPassword);
+                UserDataManager.saveUserAccount(newUserAccount);
                 JOptionPane.showMessageDialog(signUpDialog, "Registration Successful!");
                 signUpDialog.dispose();
             } else {
@@ -147,6 +159,7 @@ public class LoginScreen {
                         "Registration Error", JOptionPane.ERROR_MESSAGE);
             }
         });
+
         buttonsPanel.add(registerButton);
 
         signUpDialog.add(centerPanel, BorderLayout.CENTER);
@@ -177,4 +190,3 @@ public class LoginScreen {
         SwingUtilities.invokeLater(() -> new LoginScreen());
     }
 }
-// test
