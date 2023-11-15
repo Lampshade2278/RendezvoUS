@@ -4,7 +4,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Calendar;
 import java.util.Date;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
@@ -13,7 +12,6 @@ public class EventDialog extends JDialog {
     private JTextField titleField;
     private JTextArea descriptionField;
     private JSpinner dateSpinner;
-    private JSpinner timeSpinner;
     private JButton saveButton;
     private JButton cancelButton;
     private JButton deleteButton;
@@ -32,8 +30,6 @@ public class EventDialog extends JDialog {
         ThemeManager.applyTheme(this.getContentPane(), ThemeManager.getCurrentTheme()); // Apply theme to dialog
     }
 
-
-
     private void initializeUI(Date eventDate) {
         setTitle(isEdit ? "Edit Event" : "Add Event");
         setLayout(new BorderLayout());
@@ -41,19 +37,16 @@ public class EventDialog extends JDialog {
         int marginSize = 10;
         Border margin = new EmptyBorder(marginSize, marginSize, marginSize, marginSize);
 
-
         // Initialize UI components
         titleField = createTextField("Event Title", isEdit ? event.getTitle() : "");
         descriptionField = createTextArea("Event Description", isEdit ? event.getDescription() : "");
         dateSpinner = createSpinner("Event Date", eventDate);
-
 
         JComboBox<RecurrenceManager.Recurrence> RecurrenceComboBox = new JComboBox<>(RecurrenceManager.Recurrence.values());
         RecurrenceComboBox.addActionListener(e -> {
             RecurrenceManager.Recurrence selectedRecurrence = (RecurrenceManager.Recurrence) RecurrenceComboBox.getSelectedItem();
             mainScreen.changeRecurrence(selectedRecurrence); // Call changeTheme on MainScreen
         });
-
 
         // Initialize buttons
         saveButton = createButton("Save", this::saveEvent);
@@ -70,7 +63,6 @@ public class EventDialog extends JDialog {
         fieldsPanel.add(new JLabel("Is this Recurring?"));
         fieldsPanel.add(RecurrenceComboBox);
 
-
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(saveButton);
         buttonPanel.add(cancelButton);
@@ -78,8 +70,6 @@ public class EventDialog extends JDialog {
 
         add(fieldsPanel, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
-
-
 
         applyCurrentTheme();
     }
@@ -124,21 +114,12 @@ public class EventDialog extends JDialog {
         String description = descriptionField.getText();
         Date date = (Date) dateSpinner.getValue();
 
-        // Combine date and time
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        Calendar timeCalendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, timeCalendar.get(Calendar.HOUR_OF_DAY));
-        calendar.set(Calendar.MINUTE, timeCalendar.get(Calendar.MINUTE));
-
-        Date newDate = calendar.getTime(); // Combine date and time
-
         if (isEdit) {
             // Update the event
-            calendarModel.getEventStorage().updateEvent(event, newDate);
+            calendarModel.getEventStorage().updateEvent(event, date);
         } else {
             // Create a new event
-            event = new CalendarEvent(title, newDate, description);
+            event = new CalendarEvent(title, date, description);
             calendarModel.getEventStorage().addEvent(event);
         }
 
@@ -161,7 +142,5 @@ public class EventDialog extends JDialog {
         ThemeManager.applyTheme(saveButton, currentTheme);
         ThemeManager.applyTheme(cancelButton, currentTheme);
         ThemeManager.applyTheme(deleteButton, currentTheme);
-
-
     }
 }

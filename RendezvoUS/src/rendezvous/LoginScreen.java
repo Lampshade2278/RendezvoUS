@@ -26,7 +26,7 @@ public class LoginScreen {
         JPanel logoPanel = new JPanel();
 
         // Load the logo image icon from a file
-        ImageIcon logoIcon = new ImageIcon("RendezvoUS\\bin\\resources\\LOGO.png"); // Ensure the 'resources' directory is correctly located
+        ImageIcon logoIcon = new ImageIcon("RendezvoUS/bin/resources/LOGO.png"); // Ensure the 'resources' directory is correctly located
 
         // Resize the logo to the desired dimensions
         Image logoImage = logoIcon.getImage();
@@ -100,7 +100,7 @@ public class LoginScreen {
         JPanel logoPanel2 = new JPanel();
 
         // Load the logo image icon from a file
-        ImageIcon logoIcon = new ImageIcon("RendezvoUS\\bin\\resources\\LOGO.png"); // Ensure the 'resources' directory is correctly located
+        ImageIcon logoIcon = new ImageIcon("RendezvoUS/bin/resources/LOGO.png"); // Ensure the 'resources' directory is correctly located
 
         // Resize the logo to the desired dimensions
         Image logoImage = logoIcon.getImage();
