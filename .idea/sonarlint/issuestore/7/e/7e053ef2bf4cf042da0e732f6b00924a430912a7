@@ -1,7 +1,0 @@
-
-_
-java:S1192"IDefine a constant instead of duplicating this literal "Settings" 3 times.(ÀÁí‹
-d
-java:S3252"IUse static access with "javax.swing.WindowConstants" for "EXIT_ON_CLOSE".(Õû»öşÿÿÿÿ
-W
-java:S1612R"<Replace this lambda with method reference 'MainScreen::new'.(óŞñÏûÿÿÿÿ
