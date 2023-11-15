@@ -26,7 +26,7 @@ public class CalendarPanel extends JPanel {
         // Pass the username to the EventStorage constructor
         EventStorage eventStorage = new EventStorage(username);
         this.calendarModel = new CalendarModel(eventStorage, this);
-        backgroundImage = new ImageIcon("RendezvoUS\\bin\\resources\\LOGO2.png").getImage();
+        backgroundImage = new ImageIcon("RendezvoUS/bin/resources/LOGO21.png").getImage();
         initializeUI();
         updateCalendar();
     }
