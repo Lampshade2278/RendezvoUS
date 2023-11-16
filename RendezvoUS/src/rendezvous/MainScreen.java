@@ -24,7 +24,7 @@ public class MainScreen extends JFrame {
         mainPanel.setLayout(cardLayout);
 
         calendarPanel = new CalendarPanel(userAccount);
-        settingsPanel = new SettingsScreen(this);
+        settingsPanel = new SettingsScreen(this, userAccount);
         groupPanel = new GroupViewScreen(this);
 
         mainPanel.add(calendarPanel, "Calendar");
@@ -36,6 +36,8 @@ public class MainScreen extends JFrame {
 
         ThemeManager.changeTheme(this, ThemeManager.Theme.LIGHT);
         setVisible(true);
+
+
     }
 
     private JPanel setupNavigationPanel() {

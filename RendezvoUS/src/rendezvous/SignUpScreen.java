@@ -1,13 +1,13 @@
 package rendezvous;
+
 import javax.swing.*;
 import java.awt.*;
 
 public class SignUpScreen {
 
-    private JFrame frame;
+    private final JFrame frame;
     private JTextField usernameField;
     private JPasswordField passwordField, confirmPasswordField;
-    private JLabel logoLabel, titleLabel, usernameLabel, passwordLabel, confirmPasswordLabel;
     private JButton signUpButton;
 
     public SignUpScreen() {
@@ -18,36 +18,35 @@ public class SignUpScreen {
         JPanel panel = new JPanel(new GridLayout(4, 2));
         frame.add(panel, BorderLayout.CENTER);
 
-        // Logo and Title
-        logoLabel = new JLabel("LOGO", SwingConstants.CENTER);
-        titleLabel = new JLabel("Sign Up", SwingConstants.CENTER);
-        frame.add(logoLabel, BorderLayout.NORTH);
-        frame.add(titleLabel, BorderLayout.SOUTH);
+        // Initialize components
+        initializeComponents(panel);
 
+        // Set up Enter key binding for the Sign Up button
+        frame.getRootPane().setDefaultButton(signUpButton);
+
+        frame.setVisible(true);
+    }
+
+    private void initializeComponents(JPanel panel) {
         // Username
-        usernameLabel = new JLabel("Username: ");
         usernameField = new JTextField(20);
-        panel.add(usernameLabel);
+        panel.add(new JLabel("Username: "));
         panel.add(usernameField);
 
         // Password
-        passwordLabel = new JLabel("Password: ");
         passwordField = new JPasswordField(20);
-        panel.add(passwordLabel);
+        panel.add(new JLabel("Password: "));
         panel.add(passwordField);
 
         // Confirm Password
-        confirmPasswordLabel = new JLabel("Confirm Password: ");
         confirmPasswordField = new JPasswordField(20);
-        panel.add(confirmPasswordLabel);
+        panel.add(new JLabel("Confirm Password: "));
         panel.add(confirmPasswordField);
 
         // Sign Up Button
         signUpButton = new JButton("Sign Up");
         signUpButton.addActionListener(e -> registerUser());
         frame.add(signUpButton, BorderLayout.SOUTH);
-
-        frame.setVisible(true);
     }
 
     private void registerUser() {
@@ -71,7 +70,6 @@ public class SignUpScreen {
             JOptionPane.showMessageDialog(frame, "Password does not match.", "Registration Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-
 
     public static void main(String[] args) {
         new SignUpScreen();
