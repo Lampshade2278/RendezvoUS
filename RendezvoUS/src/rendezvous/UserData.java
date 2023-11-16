@@ -1,3 +1,5 @@
+// This class isn't being used at all yet.
+
 package rendezvous;
 
 public class UserData implements java.io.Serializable {
