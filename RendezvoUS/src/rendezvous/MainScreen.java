@@ -8,39 +8,33 @@ public class MainScreen extends JFrame {
     private JPanel mainPanel;
     private CalendarPanel calendarPanel;
     private SettingsScreen settingsPanel;
-    private GroupSettings groupPanel;
+    private GroupViewScreen groupPanel;
+    private UserAccount userAccount;
 
-    public MainScreen() {
+    public MainScreen(UserAccount userAccount) {
+        this.userAccount = userAccount;
+
         setTitle("RendezvoUS");
-        setSize(1024, 768); // Set window size
+        setSize(1024, 768);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null); // Center the window on screen
+        setLocationRelativeTo(null);
 
-        // Main panel with CardLayout
         mainPanel = new JPanel();
         cardLayout = new CardLayout();
         mainPanel.setLayout(cardLayout);
 
-        // Initialize panels
-        calendarPanel = new CalendarPanel();
-        settingsPanel = new SettingsScreen(this); // Pass this MainScreen instance to SettingsScreen
-        groupPanel = new GroupSettings(this);
+        calendarPanel = new CalendarPanel(userAccount);
+        settingsPanel = new SettingsScreen(this);
+        groupPanel = new GroupViewScreen(this);
 
-        // Add panels to CardLayout
         mainPanel.add(calendarPanel, "Calendar");
         mainPanel.add(settingsPanel, "Settings");
         mainPanel.add(groupPanel, "Group");
 
-
-        // Add navigation panel
         add(setupNavigationPanel(), BorderLayout.NORTH);
-
-        // Add main panel
         add(mainPanel, BorderLayout.CENTER);
 
-        // Apply default theme (this can be set based on user preferences)
-        ThemeManager.changeTheme(this, ThemeManager.Theme.LIGHT); // Or DARK
-
+        ThemeManager.changeTheme(this, ThemeManager.Theme.LIGHT);
         setVisible(true);
     }
 
@@ -67,30 +61,32 @@ public class MainScreen extends JFrame {
         return navPanel;
     }
 
-    // Method to change the theme
+    public void performLogout() {
+        setVisible(false);
+        new LoginScreen().setVisible(true);
+    }
+
     public void changeTheme(ThemeManager.Theme theme) {
         ThemeManager.changeTheme(this, theme);
         updateComponentsPostThemeChange();
     }
 
-    public void changeRecurrence(RecurrenceManager.Recurrence theme) {
-    }
-
-    // Refresh UI components after theme change
-    public void updateComponentsPostThemeChange() {
+    private void updateComponentsPostThemeChange() {
         mainPanel.revalidate();
         mainPanel.repaint();
         mainPanel.setOpaque(false);
     }
 
-    private void performLogout() {
-        // Logout logic
-        setVisible(false);
-        // Assuming LoginScreen is your login window
-        new LoginScreen().setVisible(true);
+    public UserAccount getUserAccount() {
+        return this.userAccount;
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new MainScreen());
+        // For testing purposes, create a dummy user account
+        UserAccount testAccount = new UserAccount("testUser", "testPass");
+        SwingUtilities.invokeLater(() -> new MainScreen(testAccount));
+    }
+
+    public void changeRecurrence(RecurrenceManager.Recurrence theme) {
     }
 }

@@ -22,29 +22,18 @@ public class LoginScreen {
     }
 
     private void initializeComponents() {
-        // Create a panel to hold the logo
+        // Logo Panel
         JPanel logoPanel = new JPanel();
-
-        // Load the logo image icon from a file
-        ImageIcon logoIcon = new ImageIcon("RendezvoUS/bin/resources/LOGO.png"); // Ensure the 'resources' directory is correctly located
-
-        // Resize the logo to the desired dimensions
-        Image logoImage = logoIcon.getImage();
-        Image newImg = logoImage.getScaledInstance(190, 130, Image.SCALE_SMOOTH); // Replace 100, 100 with the desired width and height
-        logoIcon = new ImageIcon(newImg); // Transform it back into an ImageIcon
-
-        // Create a label to hold the resized logo
+        ImageIcon logoIcon = new ImageIcon("RendezvoUS/bin/resources/LOGO.png");
+        Image logoImage = logoIcon.getImage().getScaledInstance(190, 130, Image.SCALE_SMOOTH);
+        logoIcon = new ImageIcon(logoImage);
         JLabel logoLabel = new JLabel(logoIcon);
-
-        // Add the label to the logo panel
         logoPanel.add(logoLabel);
-
-        // Add the logo panel to the frame's north position
         frame.add(logoPanel, BorderLayout.NORTH);
 
+        // Center Panel
         JPanel centerPanel = new JPanel();
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
-
         JPanel fieldsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         usernameField = new JTextField(20);
         passwordField = new JPasswordField(20);
@@ -54,6 +43,7 @@ public class LoginScreen {
         fieldsPanel.add(passwordField);
         centerPanel.add(fieldsPanel);
 
+        // Buttons Panel
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         JButton loginButton = new JButton("Login");
         loginButton.addActionListener(e -> checkLogin());
@@ -71,7 +61,6 @@ public class LoginScreen {
         loginErrorLabel.setVisible(false);
         frame.add(loginErrorLabel, BorderLayout.SOUTH);
 
-
         ThemeManager.applyTheme(frame, ThemeManager.getCurrentTheme());
     }
 
@@ -79,21 +68,18 @@ public class LoginScreen {
         String username = usernameField.getText();
         String password = new String(passwordField.getPassword());
 
-        // Load the user account from the .dat file
         UserAccount userAccount = UserDataManager.loadUserAccount(username);
-
-        // Check if the user account exists and the password matches
         if (userAccount != null && userAccount.getPassword().equals(password)) {
             loginErrorLabel.setVisible(false);
-            openMainScreen();
+            openMainScreen(userAccount);
         } else {
             loginErrorLabel.setVisible(true);
         }
     }
 
-    private void openMainScreen() {
+    private void openMainScreen(UserAccount userAccount) {
         frame.setVisible(false);
-        MainScreen mainScreen = new MainScreen();
+        MainScreen mainScreen = new MainScreen(userAccount);
         mainScreen.setVisible(true);
     }
 
@@ -107,7 +93,14 @@ public class LoginScreen {
         JPanel logoPanel2 = new JPanel();
 
         // Load the logo image icon from a file
-        ImageIcon logoIcon = new ImageIcon("RendezvoUS/bin/resources/LOGO.png"); // Ensure the 'resources' directory is correctly located
+        ImageIcon logoIcon = new ImageIcon("RendezvoUS/bin/resources/LOGO.png");  // Ensure the 'resources' directory is correctly located
+        if (logoIcon.getImageLoadStatus() == MediaTracker.COMPLETE) {
+            Image logoImage = logoIcon.getImage();
+            // Resize and use the image
+        } else {
+            // Handle the case where the image is not loaded
+            System.out.println("Image not loaded");
+        }
 
         // Resize the logo to the desired dimensions
         Image logoImage = logoIcon.getImage();
@@ -121,7 +114,6 @@ public class LoginScreen {
         logoPanel2.add(logoLabel);
 
         // Add the logo panel to the frame's north position
-
         JPanel formPanel = new JPanel();
         formPanel.setLayout(new GridLayout(0, 1, 1, 1));
         formPanel.setBorder(BorderFactory.createEmptyBorder(10, 30, 10, 30));

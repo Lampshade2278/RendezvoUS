@@ -60,11 +60,18 @@ public class SignUpScreen {
             UserAccount newUserAccount = new UserAccount(username, password);
             UserDataManager.saveUserAccount(newUserAccount); // Save to .dat file
             JOptionPane.showMessageDialog(frame, "Registration Successful!");
+
+            // Close the registration screen
             frame.dispose();
+
+            // Open the main screen with the new user account
+            MainScreen mainScreen = new MainScreen(newUserAccount);
+            mainScreen.setVisible(true);
         } else {
             JOptionPane.showMessageDialog(frame, "Password does not match.", "Registration Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+
 
     public static void main(String[] args) {
         new SignUpScreen();

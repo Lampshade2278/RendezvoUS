@@ -5,13 +5,12 @@ import java.util.GregorianCalendar;
 
 public class CalendarModel {
     private Calendar calendar;
-    private EventStorage eventStorage; // Instance of EventStorage for managing events
-    private CalendarPanel calendarPanel; // Reference to the CalendarPanel
+    private UserAccount userAccount; // Reference to the user's account
+    private CalendarPanel calendarPanel;
 
-    // Constructor initializes the calendar and event storage
-    public CalendarModel(EventStorage eventStorage, CalendarPanel calendarPanel) {
+    public CalendarModel(UserAccount userAccount, CalendarPanel calendarPanel) {
         this.calendar = new GregorianCalendar();
-        this.eventStorage = eventStorage;
+        this.userAccount = userAccount;
         this.calendarPanel = calendarPanel;
     }
 
@@ -58,7 +57,7 @@ public class CalendarModel {
 
     // Provides access to the EventStorage instance
     public EventStorage getEventStorage() {
-        return eventStorage;
+        return new EventStorage(userAccount.getUsername()); // Create a new EventStorage for the user
     }
 
     // Method to notify the CalendarPanel to refresh the calendar view
