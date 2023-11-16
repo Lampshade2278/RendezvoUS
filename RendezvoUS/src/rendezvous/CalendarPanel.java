@@ -1,6 +1,7 @@
 package rendezvous;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
@@ -11,7 +12,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Vector;
-import javax.swing.table.DefaultTableCellRenderer;
 
 public class CalendarPanel extends JPanel {
     private final CalendarModel calendarModel;
@@ -22,10 +22,8 @@ public class CalendarPanel extends JPanel {
     // Assume that this username is the currently logged-in user's username
     private String username = "current_user"; // Replace with the actual username
 
-    public CalendarPanel() {
-        // Pass the username to the EventStorage constructor
-        EventStorage eventStorage = new EventStorage(username);
-        this.calendarModel = new CalendarModel(eventStorage, this);
+    public CalendarPanel(UserAccount userAccount) {
+        this.calendarModel = new CalendarModel(userAccount, this);
         backgroundImage = new ImageIcon("RendezvoUS/bin/resources/LOGO21.png").getImage();
         initializeUI();
         updateCalendar();

@@ -4,43 +4,38 @@ import javax.swing.*;
 import java.awt.*;
 
 public class MainScreen extends JFrame {
+
     private CardLayout cardLayout;
     private JPanel mainPanel;
     private CalendarPanel calendarPanel;
     private SettingsScreen settingsPanel;
     private GroupSettings groupPanel;
+    private UserAccount userAccount;
 
-    public MainScreen() {
+    public MainScreen(UserAccount userAccount) {
+        this.userAccount = userAccount;
+
         setTitle("RendezvoUS");
-        setSize(1024, 768); // Set window size
+        setSize(1024, 768);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null); // Center the window on screen
+        setLocationRelativeTo(null);
 
-        // Main panel with CardLayout
         mainPanel = new JPanel();
         cardLayout = new CardLayout();
         mainPanel.setLayout(cardLayout);
 
-        // Initialize panels
-        calendarPanel = new CalendarPanel();
-        settingsPanel = new SettingsScreen(this); // Pass this MainScreen instance to SettingsScreen
+        calendarPanel = new CalendarPanel(userAccount);
+        settingsPanel = new SettingsScreen(this);
         groupPanel = new GroupSettings(this);
 
-        // Add panels to CardLayout
         mainPanel.add(calendarPanel, "Calendar");
         mainPanel.add(settingsPanel, "Settings");
         mainPanel.add(groupPanel, "Group");
 
-
-        // Add navigation panel
         add(setupNavigationPanel(), BorderLayout.NORTH);
-
-        // Add main panel
         add(mainPanel, BorderLayout.CENTER);
 
-        // Apply default theme (this can be set based on user preferences)
-        ThemeManager.changeTheme(this, ThemeManager.Theme.LIGHT); // Or DARK
-
+        ThemeManager.changeTheme(this, ThemeManager.Theme.LIGHT);
         setVisible(true);
     }
 
@@ -67,6 +62,11 @@ public class MainScreen extends JFrame {
         return navPanel;
     }
 
+    private void performLogout() {
+        setVisible(false);
+        new LoginScreen().setVisible(true);
+    }
+
     // Method to change the theme
     public void changeTheme(ThemeManager.Theme theme) {
         ThemeManager.changeTheme(this, theme);
@@ -83,14 +83,7 @@ public class MainScreen extends JFrame {
         mainPanel.setOpaque(false);
     }
 
-    private void performLogout() {
-        // Logout logic
-        setVisible(false);
-        // Assuming LoginScreen is your login window
-        new LoginScreen().setVisible(true);
-    }
-
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new MainScreen());
+        SwingUtilities.invokeLater(() -> new MainScreen(new UserAccount("test", "password"))); // For testing
     }
 }

@@ -1,12 +1,12 @@
 package rendezvous;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Date;
-import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
 
 public class EventDialog extends JDialog {
     private JTextField titleField;
@@ -25,9 +25,7 @@ public class EventDialog extends JDialog {
         this.event = event;
         this.isEdit = (event != null);
         this.calendarModel = calendarModel;
-
         initializeUI(eventDate);
-        ThemeManager.applyTheme(this.getContentPane(), ThemeManager.getCurrentTheme()); // Apply theme to dialog
     }
 
     private void initializeUI(Date eventDate) {
