@@ -16,14 +16,13 @@ public class SettingsScreen extends JPanel {
     }
 
     private JPanel createAppearanceSection() {
-        JPanel appearancePanel = new JPanel();
-        appearancePanel.setLayout(new FlowLayout());
+        JPanel appearancePanel = new JPanel(new FlowLayout());
         appearancePanel.add(new JLabel("Appearance:"));
 
         JComboBox<ThemeManager.Theme> themeComboBox = new JComboBox<>(ThemeManager.Theme.values());
         themeComboBox.addActionListener(e -> {
             ThemeManager.Theme selectedTheme = (ThemeManager.Theme) themeComboBox.getSelectedItem();
-            mainScreen.changeTheme(selectedTheme); // Call changeTheme on MainScreen
+            mainScreen.changeTheme(selectedTheme);
         });
         appearancePanel.add(themeComboBox);
 
@@ -31,35 +30,37 @@ public class SettingsScreen extends JPanel {
     }
 
     private JPanel createAccountManagementSection() {
-        JPanel accountPanel = new JPanel();
-        accountPanel.setLayout(new FlowLayout());
+        JPanel accountPanel = new JPanel(new FlowLayout());
 
         JButton deleteAccountButton = new JButton("Delete Account");
         deleteAccountButton.addActionListener(e -> deleteAccount());
         accountPanel.add(deleteAccountButton);
 
         JButton sendFeedbackButton = new JButton("Send Feedback");
-        sendFeedbackButton.setEnabled(false); // Disabled as functionality not implemented yet
+        sendFeedbackButton.setEnabled(false);
         accountPanel.add(sendFeedbackButton);
 
         return accountPanel;
     }
 
     private void deleteAccount() {
-        // Placeholder for delete account functionality
-        String username = getCurrentUser();
-        File file = new File(username + ".dat");
-        if (file.delete()) {
-            JOptionPane.showMessageDialog(this, "Account deleted successfully.");
-            System.exit(0); // Exit the application
+        String username = getCurrentUser(); // Ensure this returns the logged-in user's username
+        File accountFile = new File(username + ".dat");
+        File eventsFile = new File(username + "_events.dat");
+        boolean accountDeleted = accountFile.delete();
+        boolean eventsDeleted = eventsFile.delete();
+
+        if (accountDeleted && eventsDeleted) {
+            JOptionPane.showMessageDialog(this, "Account and associated events deleted successfully.");
+            mainScreen.performLogout();
         } else {
-            JOptionPane.showMessageDialog(this, "Error deleting account.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error deleting account or events.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
+
+
     private String getCurrentUser() {
-        // Placeholder method for getting current user's username
-        return "current_user";
+        return mainScreen.getUserAccount().getUsername();
     }
 }
-

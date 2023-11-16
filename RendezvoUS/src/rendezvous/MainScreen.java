@@ -4,12 +4,11 @@ import javax.swing.*;
 import java.awt.*;
 
 public class MainScreen extends JFrame {
-
     private CardLayout cardLayout;
     private JPanel mainPanel;
     private CalendarPanel calendarPanel;
     private SettingsScreen settingsPanel;
-    private GroupSettings groupPanel;
+    private GroupViewScreen groupPanel;
     private UserAccount userAccount;
 
     public MainScreen(UserAccount userAccount) {
@@ -26,7 +25,7 @@ public class MainScreen extends JFrame {
 
         calendarPanel = new CalendarPanel(userAccount);
         settingsPanel = new SettingsScreen(this);
-        groupPanel = new GroupSettings(this);
+        groupPanel = new GroupViewScreen(this);
 
         mainPanel.add(calendarPanel, "Calendar");
         mainPanel.add(settingsPanel, "Settings");
@@ -62,28 +61,32 @@ public class MainScreen extends JFrame {
         return navPanel;
     }
 
-    private void performLogout() {
+    public void performLogout() {
         setVisible(false);
         new LoginScreen().setVisible(true);
     }
 
-    // Method to change the theme
     public void changeTheme(ThemeManager.Theme theme) {
         ThemeManager.changeTheme(this, theme);
         updateComponentsPostThemeChange();
     }
 
-    public void changeRecurrence(RecurrenceManager.Recurrence theme) {
-    }
-
-    // Refresh UI components after theme change
-    public void updateComponentsPostThemeChange() {
+    private void updateComponentsPostThemeChange() {
         mainPanel.revalidate();
         mainPanel.repaint();
         mainPanel.setOpaque(false);
     }
 
+    public UserAccount getUserAccount() {
+        return this.userAccount;
+    }
+
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new MainScreen(new UserAccount("test", "password"))); // For testing
+        // For testing purposes, create a dummy user account
+        UserAccount testAccount = new UserAccount("testUser", "testPass");
+        SwingUtilities.invokeLater(() -> new MainScreen(testAccount));
+    }
+
+    public void changeRecurrence(RecurrenceManager.Recurrence theme) {
     }
 }

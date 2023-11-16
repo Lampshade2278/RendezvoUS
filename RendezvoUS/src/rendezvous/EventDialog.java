@@ -107,26 +107,28 @@ public class EventDialog extends JDialog {
     }
 
     private void saveEvent(ActionEvent e) {
-        // Extract information from fields
         String title = titleField.getText();
         String description = descriptionField.getText();
         Date date = (Date) dateSpinner.getValue();
 
         if (isEdit) {
-            // Update the event
-            calendarModel.getEventStorage().updateEvent(event, date);
+            // Create a new event instance with updated details
+            CalendarEvent updatedEvent = new CalendarEvent(title, date, description);
+
+            // Pass both the original and the updated event to the updateEvent method
+            calendarModel.getEventStorage().updateEvent(this.event, updatedEvent);
         } else {
             // Create a new event
-            event = new CalendarEvent(title, date, description);
-            calendarModel.getEventStorage().addEvent(event);
+            CalendarEvent newEvent = new CalendarEvent(title, date, description);
+            calendarModel.getEventStorage().addEvent(newEvent);
         }
 
         dispose(); // Close the dialog
     }
 
+
     private void deleteEvent(ActionEvent e) {
         if (isEdit) {
-            // Remove the event from the storage
             calendarModel.getEventStorage().removeEvent(event);
         }
         dispose(); // Close the dialog
