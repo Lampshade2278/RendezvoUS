@@ -11,12 +11,15 @@ public class SettingsScreen extends JPanel {
     private JPasswordField newPasswordField;
     private JPasswordField confirmNewPasswordField;
     private JButton changePasswordButton;
+    private JTextField usernameToDeleteField;
+    private JButton deleteAccountButton;
 
     public SettingsScreen(MainScreen mainScreen, UserAccount userAccount) {
         this.mainScreen = mainScreen;
         this.userAccount = userAccount;
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
+        // Adding different sections to the settings screen
         add(createAppearanceSection());
         add(createPasswordSection());
         add(createNotificationSection());
@@ -25,11 +28,13 @@ public class SettingsScreen extends JPanel {
         add(createAccountManagementSection());
     }
 
+    // Section for changing the application's appearance (theme)
     private JPanel createAppearanceSection() {
         JPanel appearancePanel = new JPanel();
         appearancePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         appearancePanel.setBorder(BorderFactory.createTitledBorder("Appearance Settings"));
 
+        // Dropdown for selecting themes
         JComboBox<ThemeManager.Theme> themeComboBox = new JComboBox<>(ThemeManager.Theme.values());
         themeComboBox.addActionListener(e -> {
             ThemeManager.Theme selectedTheme = (ThemeManager.Theme) themeComboBox.getSelectedItem();
@@ -43,6 +48,7 @@ public class SettingsScreen extends JPanel {
         return appearancePanel;
     }
 
+    // Section for managing user's password
     private JPanel createPasswordSection() {
         JPanel passwordPanel = new JPanel();
         passwordPanel.setLayout(new GridLayout(4, 2, 5, 5));
@@ -66,6 +72,30 @@ public class SettingsScreen extends JPanel {
         return passwordPanel;
     }
 
+    // Logic for changing password
+    private void changePassword() {
+        String currentPassword = new String(currentPasswordField.getPassword());
+        String newPassword = new String(newPasswordField.getPassword());
+        String confirmNewPassword = new String(confirmNewPasswordField.getPassword());
+
+        if (!currentPassword.equals(userAccount.getPassword())) {
+            JOptionPane.showMessageDialog(this, "Current password is incorrect.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        if (!newPassword.equals(confirmNewPassword)) {
+            JOptionPane.showMessageDialog(this, "New passwords do not match.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Add your password strength or other checks here if needed
+
+        userAccount.setPassword(newPassword);
+        UserDataManager.saveUserAccount(userAccount);
+        JOptionPane.showMessageDialog(this, "Password changed successfully.");
+    }
+
+    // Placeholder sections for notifications and feedback (currently disabled)
     private JPanel createNotificationSection() {
         JPanel notificationPanel = new JPanel();
         notificationPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -127,54 +157,52 @@ public class SettingsScreen extends JPanel {
         return miscPanel;
     }
 
+    // Section for managing the user's account, including deletion
     private JPanel createAccountManagementSection() {
         JPanel accountPanel = new JPanel();
-        accountPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        accountPanel.setLayout(new BoxLayout(accountPanel, BoxLayout.Y_AXIS));
         accountPanel.setBorder(BorderFactory.createTitledBorder("Account Management"));
 
-        JButton deleteAccountButton = new JButton("Delete Account");
+        // Create a panel for delete account section
+        JPanel deleteAccountPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+
+        JLabel deleteLabel = new JLabel("Enter Username to Confirm Deletion:");
+        deleteAccountPanel.add(deleteLabel);
+
+        usernameToDeleteField = new JTextField(20);
+        deleteAccountPanel.add(usernameToDeleteField);
+
+        deleteAccountButton = new JButton("Delete Account");
+        deleteAccountButton.setPreferredSize(changePasswordButton.getPreferredSize()); // Match size to changePasswordButton
         deleteAccountButton.addActionListener(e -> deleteAccount());
-        accountPanel.add(deleteAccountButton);
+        deleteAccountPanel.add(deleteAccountButton);
+
+        accountPanel.add(deleteAccountPanel);
 
         return accountPanel;
     }
 
-    private void changePassword() {
-        String currentPassword = new String(currentPasswordField.getPassword());
-        String newPassword = new String(newPasswordField.getPassword());
-        String confirmNewPassword = new String(confirmNewPasswordField.getPassword());
-
-        if (!currentPassword.equals(userAccount.getPassword())) {
-            JOptionPane.showMessageDialog(this, "Current password is incorrect.", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        if (!newPassword.equals(confirmNewPassword)) {
-            JOptionPane.showMessageDialog(this, "New passwords do not match.", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        // Add your password strength or other checks here if needed
-
-        userAccount.setPassword(newPassword);
-        UserDataManager.saveUserAccount(userAccount);
-        JOptionPane.showMessageDialog(this, "Password changed successfully.");
-    }
-
+    // Logic for deleting user's account
     private void deleteAccount() {
-        String username = getCurrentUser();
-        File accountFile = new File(username + ".dat");
-        File eventsFile = new File(username + "_events.dat");
+        String enteredUsername = usernameToDeleteField.getText();
 
-        if (accountFile.delete() && eventsFile.delete()) {
-            JOptionPane.showMessageDialog(this, "Account deleted successfully.");
-            mainScreen.performLogout();
-        } else {
-            JOptionPane.showMessageDialog(this, "Error deleting account.", "Error", JOptionPane.ERROR_MESSAGE);
+        if (!enteredUsername.equals(userAccount.getUsername())) {
+            JOptionPane.showMessageDialog(this, "Username entered does not match. Account not deleted.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
         }
-    }
 
-    private String getCurrentUser() {
-        return userAccount.getUsername();
+        int confirmation = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete your account?", "Confirm Account Deletion", JOptionPane.YES_NO_OPTION);
+
+        if (confirmation == JOptionPane.YES_OPTION) {
+            File accountFile = new File(userAccount.getUsername() + ".dat");
+            File eventsFile = new File(userAccount.getUsername() + "_events.dat");
+
+            if (accountFile.delete() && eventsFile.delete()) {
+                JOptionPane.showMessageDialog(this, "Account and associated events deleted successfully.");
+                mainScreen.performLogout();
+            } else {
+                JOptionPane.showMessageDialog(this, "Error deleting account or events.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }
 }
