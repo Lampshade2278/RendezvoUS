@@ -2,6 +2,8 @@ package rendezvous;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class LoginScreen {
 
@@ -62,6 +64,16 @@ public class LoginScreen {
         frame.add(loginErrorLabel, BorderLayout.SOUTH);
 
         ThemeManager.applyTheme(frame, ThemeManager.getCurrentTheme());
+
+        // Add key listener to password field for Enter key press
+        passwordField.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    checkLogin();
+                }
+            }
+        });
     }
 
     private void checkLogin() {
