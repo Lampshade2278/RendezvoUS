@@ -97,18 +97,23 @@ public class CalendarPanel extends JPanel {
 
     @Override
     protected void paintComponent(Graphics g) {
-        super.setOpaque(false);
         super.paintComponent(g);
+        Graphics2D g2d = (Graphics2D) g.create();
+
         // Draw the background image
         int x = (this.getWidth() - backgroundImage.getWidth(null)) / 2;
         int y = (this.getHeight() - backgroundImage.getHeight(null)) / 2;
 
         if (backgroundImage != null) {
-            g.drawImage(backgroundImage, x, y, this);
-
-
+            g2d.drawImage(backgroundImage, x, y, this);
         }
 
+        // Draw a semi-transparent overlay
+        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f)); // 0.5f for 50% transparency
+        g2d.setColor(getBackground()); // Use the panel's background color
+        g2d.fillRect(0, 0, getWidth(), getHeight());
+
+        g2d.dispose();
     }
 
     private void goToday() {
