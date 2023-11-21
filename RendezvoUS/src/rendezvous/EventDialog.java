@@ -38,7 +38,7 @@ public class EventDialog extends JDialog {
         // Initialize UI components
         titleField = createTextField("Event Title", isEdit ? event.getTitle() : "");
         descriptionField = createTextArea("Event Description", isEdit ? event.getDescription() : "");
-        dateSpinner = createSpinner("Event Date", eventDate);
+        dateSpinner = createSpinner("Event Date and Time", eventDate);
 
         JComboBox<RecurrenceManager.Recurrence> RecurrenceComboBox = new JComboBox<>(RecurrenceManager.Recurrence.values());
         RecurrenceComboBox.addActionListener(e -> {
