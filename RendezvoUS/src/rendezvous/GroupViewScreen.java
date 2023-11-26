@@ -1,14 +1,13 @@
 package rendezvous;
-import javax.swing.*;
-import java.awt.*;
 
-public class GroupViewScreen extends JPanel {
+public class GroupViewScreen extends CalendarPanel {
 
-    public GroupViewScreen(MainScreen mainScreen) {
+    public GroupViewScreen(UserAccount groupOwner) {
+        super(groupOwner);
+
+        /*
         // Set the layout for this panel
         this.setLayout(new BorderLayout());
-
-        //this.add(headerPanel, BorderLayout.NORTH);
 
         // Main Panel with two Calendars
         JPanel calendarsPanel = new JPanel(new GridLayout(1, 2));
@@ -27,5 +26,7 @@ public class GroupViewScreen extends JPanel {
 
         // Add calendars panel to the main panel
         this.add(calendarsPanel, BorderLayout.CENTER);
+
+         */
     }
 }

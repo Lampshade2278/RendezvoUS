@@ -105,7 +105,8 @@ public class LoginScreen {
         JPanel logoPanel2 = new JPanel();
 
         // Load the logo image icon from a file
-        ImageIcon logoIcon = new ImageIcon("RendezvoUS/bin/resources/LOGO.png");  // Ensure the 'resources' directory is correctly located
+        ImageIcon logoIcon = new ImageIcon("RendezvoUS/bin/resources/LOGO.png");
+        // Ensure the 'resources' directory is correctly located
         if (logoIcon.getImageLoadStatus() == MediaTracker.COMPLETE) {
             Image logoImage = logoIcon.getImage();
             // Resize and use the image

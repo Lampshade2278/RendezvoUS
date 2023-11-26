@@ -2,7 +2,7 @@ package rendezvous;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
-
+//todo Class not used
 public class GroupSettings extends JPanel {
     private MainScreen mainScreen;
 

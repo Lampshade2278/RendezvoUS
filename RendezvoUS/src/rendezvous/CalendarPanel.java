@@ -5,6 +5,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.text.SimpleDateFormat;
@@ -29,7 +30,7 @@ public class CalendarPanel extends JPanel {
         updateCalendar();
     }
 
-    private void initializeUI() {
+    protected void initializeUI() {
         setLayout(new BorderLayout());
 
         monthLabel = new JLabel("", JLabel.CENTER);
@@ -65,6 +66,8 @@ public class CalendarPanel extends JPanel {
             }
 
         };
+        //Disables column reordering
+        calendarTable.getTableHeader().setReorderingAllowed(false);
 
         calendarTable.setRowHeight(120);
         calendarTable.setOpaque(false);
@@ -178,11 +181,11 @@ public class CalendarPanel extends JPanel {
             eventSummary.append(event.getTitle()).append(" at ").append(timeFormat.format(event.getDate())).append(", ");
         }
 
-        if (eventSummary.length() > 0) {
+        if (!eventSummary.isEmpty()) {
             eventSummary.setLength(eventSummary.length() - 2);
         }
 
-        return " (" + eventSummary + ")";
+        return " " + eventSummary + " ";
     }
 
     private class CalendarTableMouseListener extends MouseAdapter {
@@ -205,21 +208,63 @@ public class CalendarPanel extends JPanel {
             cal.set(Calendar.DAY_OF_MONTH, day);
             Date selectedDate = cal.getTime();
 
-            List<CalendarEvent> events = calendarModel.getEventStorage().getEventsByDate(selectedDate);
-            if (!events.isEmpty()) {
-                CalendarEvent firstEvent = events.get(0);
-                EventDialog eventDialog = new EventDialog(JFrame.getFrames()[0], true, firstEvent, calendarModel, selectedDate);
-                eventDialog.setLocationRelativeTo(this);
-                eventDialog.setVisible(true);
-            } else {
-                EventDialog eventDialog = new EventDialog(JFrame.getFrames()[0], true, null, calendarModel, selectedDate);
-                eventDialog.setLocationRelativeTo(this);
-                eventDialog.setVisible(true);
-            }
-
-            updateCalendar();
+            displayEventsOnDay(selectedDate);
 
         }
+    }
+
+    private void displayEventsOnDay(Date selectedDate) {
+
+        SimpleDateFormat headerDateFormat = new SimpleDateFormat("MMM-dd-yyyy");
+        String formattedHeaderDate = headerDateFormat.format(selectedDate);
+
+        JFrame dayEventsFrame = new JFrame("Events on " + formattedHeaderDate);
+        List<CalendarEvent> events = calendarModel.getEventStorage().getEventsByDate(selectedDate);
+
+        dayEventsFrame.setSize(300, 400);
+        dayEventsFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+
+        // Create a panel to display events and the "Add Event" button
+        JPanel eventsOnDayPanel = new JPanel(new FlowLayout());
+
+        // Display existing events with buttons for each event
+        for (CalendarEvent event : events) {
+            String eventTime = new SimpleDateFormat("hh:mm").format(event.getDate());
+            JButton eventButton = new JButton(event.getTitle() + " at " + eventTime);
+            //Action Listener
+            eventButton.addActionListener(e -> {
+                EventDialog eventDialog = new EventDialog(JFrame.getFrames()[0], true, event, calendarModel, selectedDate);
+                eventDialog.setLocationRelativeTo(this);
+                eventDialog.setVisible(true);
+
+                // Refresh the calendar after editing an event
+                updateCalendar();
+                //close Events frame after editing event
+                dayEventsFrame.dispose();
+            });
+            eventsOnDayPanel.add(eventButton);
+
+        }
+        dayEventsFrame.getContentPane().add(eventsOnDayPanel);
+        dayEventsFrame.setLocationRelativeTo(this);
+        dayEventsFrame.setVisible(true);
+        // Create "Add Event" button
+        JButton addEventButton = new JButton("Add Event");
+        addEventButton.addActionListener(e -> {
+            EventDialog eventDialog = new EventDialog(JFrame.getFrames()[0], true, null, calendarModel, selectedDate);
+            eventDialog.setLocationRelativeTo(this);
+            eventDialog.setVisible(true);
+
+            // Refresh the calendar after adding an event
+            updateCalendar();
+            //close Events frame after adding event
+            dayEventsFrame.dispose();
+
+        });
+        JPanel addButtonPanel = new JPanel(new BorderLayout());
+        addButtonPanel.add(addEventButton, BorderLayout.SOUTH);
+        dayEventsFrame.add(addButtonPanel, BorderLayout.SOUTH);
     }
 
     public void refreshCalendar() {

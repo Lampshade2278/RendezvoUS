@@ -4,9 +4,9 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 public class CalendarModel {
-    private Calendar calendar;
-    private UserAccount userAccount; // Reference to the user's account
-    private CalendarPanel calendarPanel;
+    protected final Calendar calendar;
+    private final UserAccount userAccount; // Reference to the user's account
+    protected final CalendarPanel calendarPanel;
 
     public CalendarModel(UserAccount userAccount, CalendarPanel calendarPanel) {
         this.calendar = new GregorianCalendar();

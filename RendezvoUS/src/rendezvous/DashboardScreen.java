@@ -1,7 +1,7 @@
 package rendezvous;
 import javax.swing.*;
 import java.awt.*;
-
+//todo Class not used
 public class DashboardScreen extends JPanel {
 
     public DashboardScreen() {

@@ -22,11 +22,9 @@ public class CalendarEvent implements Serializable {
     public String getTitle() {
         return title;
     }
-
     public Date getDate() {
         return date;
     }
-
     public String getDescription() {
         return description;
     }

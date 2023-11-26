@@ -2,7 +2,7 @@ package rendezvous;
 
 import javax.swing.*;
 import java.awt.*;
-
+//todo Class not used
 public class EventDetailsScreen extends JPanel {
 
     public EventDetailsScreen() {

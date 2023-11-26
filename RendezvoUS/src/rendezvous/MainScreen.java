@@ -11,6 +11,7 @@ public class MainScreen extends JFrame {
     private GroupViewScreen groupPanel;
     private UserAccount userAccount;
 
+    // MainScreen constructor
     public MainScreen(UserAccount userAccount) {
         this.userAccount = userAccount;
 
@@ -25,7 +26,7 @@ public class MainScreen extends JFrame {
 
         calendarPanel = new CalendarPanel(userAccount);
         settingsPanel = new SettingsScreen(this, userAccount);
-        groupPanel = new GroupViewScreen(this);
+        groupPanel = new GroupViewScreen(userAccount);
 
         mainPanel.add(calendarPanel, "Calendar");
         mainPanel.add(settingsPanel, "Settings");
@@ -36,7 +37,6 @@ public class MainScreen extends JFrame {
 
         ThemeManager.changeTheme(this, ThemeManager.Theme.LIGHT);
         setVisible(true);
-
 
     }
 
@@ -83,12 +83,14 @@ public class MainScreen extends JFrame {
         return this.userAccount;
     }
 
+    //todo remove before finishing
     public static void main(String[] args) {
         // For testing purposes, create a dummy user account
         UserAccount testAccount = new UserAccount("testUser", "testPass");
         SwingUtilities.invokeLater(() -> new MainScreen(testAccount));
     }
 
+    //todo implement event recurrence
     public void changeRecurrence(RecurrenceManager.Recurrence theme) {
     }
 }

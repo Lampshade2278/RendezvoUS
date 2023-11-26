@@ -11,7 +11,7 @@ import java.util.Date;
 public class EventDialog extends JDialog {
     private JTextField titleField;
     private JTextArea descriptionField;
-    private JSpinner dateSpinner;
+    private JSpinner dateSpinner;//todo spinner is poor way to input Date/time
     private JButton saveButton;
     private JButton cancelButton;
     private JButton deleteButton;

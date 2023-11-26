@@ -1,5 +1,4 @@
-// This class isn't being used at all yet.
-
+// todo Class not used
 package rendezvous;
 
 public class UserData implements java.io.Serializable {

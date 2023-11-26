@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class UserAccount implements Serializable {
     private String username;
-    private String password; // Consider storing hashed passwords for security
+    private String password; // todo Consider storing hashed passwords for security
     private List<CalendarEvent> events; // List of user's calendar events
     private UserSettings settings; // User-specific settings
 
@@ -14,7 +14,7 @@ public class UserAccount implements Serializable {
     public UserAccount(String username, String password) {
         this.username = username;
         this.password = password;
-        this.events = new ArrayList<>();
+        this.events = new ArrayList<>();//todo not used
         this.settings = new UserSettings(); // Initialize with default settings
     }
 
@@ -30,8 +30,10 @@ public class UserAccount implements Serializable {
     public void setEvents(List<CalendarEvent> events) { this.events = events; }
     public void setSettings(UserSettings settings) { this.settings = settings; }
 
+
+
     // Methods to manage events
-    public void addEvent(CalendarEvent event) { events.add(event); }
+    public void addEvent(CalendarEvent event) { events.add(event); }//todo if these aren't used what is 'events' for?
     public void removeEvent(CalendarEvent event) { events.remove(event); }
     // Additional methods as needed...
 }
