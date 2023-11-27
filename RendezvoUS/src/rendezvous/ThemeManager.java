@@ -13,9 +13,16 @@ public class ThemeManager {
     }
 
     private static Theme currentTheme = Theme.LIGHT;
-
+    public final static Color LIGHT_THEME = new Color(220, 220, 220);
+    public final static Color DARK_THEME = new Color(64, 64, 64);
     public static Theme getCurrentTheme() {
         return currentTheme;
+    }
+    public static Theme getOppositeTheme() {
+        if (currentTheme == Theme.DARK)
+            return Theme.LIGHT;
+        else
+            return Theme.DARK;
     }
 
     public static void applyTheme(Component component, Theme theme) {
@@ -38,7 +45,7 @@ public class ThemeManager {
     }
 
     private static void setLightTheme(Component component) {
-        Color backgroundColor = new Color(220, 220, 220); // light gray
+        Color backgroundColor = LIGHT_THEME;
         Color foregroundColor = Color.BLACK; // black
         component.setBackground(backgroundColor);
         component.setForeground(foregroundColor);
@@ -65,7 +72,7 @@ public class ThemeManager {
     }
 
     private static void setDarkTheme(Component component) {
-        Color backgroundColor = new Color(64, 64, 64); // dark gray
+        Color backgroundColor = DARK_THEME;
         Color foregroundColor = Color.WHITE; // white
         component.setBackground(backgroundColor);
         component.setForeground(foregroundColor);

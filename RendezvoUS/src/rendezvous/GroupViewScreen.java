@@ -6,25 +6,21 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 public class GroupViewScreen extends CalendarPanel {
-	
+
 	//Store usernames of all group members
 	public final ArrayList<String> groupMembers = new ArrayList<String>();
-	
-	
+
     public GroupViewScreen(UserAccount groupOwner) {
         super(groupOwner);
-        
-        // Add logic to store group member usernames in the arrayList
         groupMembers.add(groupOwner.getUsername());
         groupMembers.add("Member1");
         groupMembers.add("Member2");
-        
+
         /*
         // Set the layout for this panel
         this.setLayout(new BorderLayout());
@@ -49,7 +45,7 @@ public class GroupViewScreen extends CalendarPanel {
 
          */
     }
-    
+
     @Override
     protected void displayEventsOnDay(Date selectedDate) {
 
@@ -68,11 +64,12 @@ public class GroupViewScreen extends CalendarPanel {
 
         // Display existing events with buttons for each event
         for (CalendarEvent event : events) {
-            String eventTime = new SimpleDateFormat("hh:mm").format(event.getDate());
+            String eventTime = new SimpleDateFormat("hh:mm aa").format(event.getDate());
             JButton eventButton = new JButton(event.getTitle() + " at " + eventTime);
             //Action Listener
             eventButton.addActionListener(e -> {
-                GroupEventDialog eventDialog = new GroupEventDialog(JFrame.getFrames()[0], true, event, calendarModel, event.getDate(), groupMembers);
+                GroupEventDialog eventDialog = new GroupEventDialog(JFrame.getFrames()[0], true, event,
+                        calendarModel, event.getDate(), groupMembers);
                 eventDialog.setLocationRelativeTo(this);
                 eventDialog.setVisible(true);
 
@@ -90,7 +87,8 @@ public class GroupViewScreen extends CalendarPanel {
         // Create "Add Event" button
         JButton addEventButton = new JButton("Add Event");
         addEventButton.addActionListener(e -> {
-            GroupEventDialog eventDialog = new GroupEventDialog(JFrame.getFrames()[0], true, null, calendarModel, selectedDate, groupMembers);
+            GroupEventDialog eventDialog = new GroupEventDialog(JFrame.getFrames()[0], true, null,
+                    calendarModel, selectedDate, groupMembers);
             eventDialog.setLocationRelativeTo(this);
             eventDialog.setVisible(true);
 

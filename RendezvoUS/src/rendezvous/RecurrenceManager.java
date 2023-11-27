@@ -3,11 +3,11 @@ package rendezvous;
 import javax.swing.*;
 import javax.swing.table.JTableHeader;
 import java.awt.*;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 public class RecurrenceManager {
-
     public enum Recurrence {
-        NO, YES
+        NO, WEEKLY, BIWEEKLY, MONTHLY
     }
 
     private static Recurrence currentRecurrence = Recurrence.NO;
@@ -16,29 +16,26 @@ public class RecurrenceManager {
         return currentRecurrence;
     }
 
-    public static void applyRecurrence(Component component, Recurrence Recurrence) {
-        currentRecurrence = Recurrence;
-        switch (Recurrence) {
-            case NO:
-                setRecurrenceNO(component);
-                break;
-            case YES:
-                setRecurrenceYES(component);
-                break;
+    public static void updateRecurrence(CalendarEvent event, Recurrence recurrence) {
+
+        currentRecurrence = recurrence;
+
+        if(recurrence == Recurrence.NO) {
+            removeEventFromRecurringEvents(event);
+        }
+        else {
+            addEventToRecurringEvents(event, recurrence);
         }
 
-        if (component instanceof Container) {
-            for (Component child : ((Container) component).getComponents()) {
-                applyRecurrence(child, Recurrence);
-            }
-        }
     }
 
-    private static void setRecurrenceNO(Component component) {
+    private static void addEventToRecurringEvents(CalendarEvent event, Recurrence recurrence) {
 
     }
 
-    private static void setRecurrenceYES(Component component) {
+    private static void removeEventFromRecurringEvents(CalendarEvent event) {
 
     }
+
+
 }

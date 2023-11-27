@@ -10,7 +10,7 @@ public class GroupCalendar extends CalendarModel {
     public GroupCalendar(UserAccount groupCreator, CalendarPanel calendarPanel) {
         super(groupCreator, calendarPanel);
         this.groupCreator = groupCreator;
-        accountsInGroup.set(0, groupCreator);
+        accountsInGroup.add(groupCreator);
     }
     //Constructor for multiple initial group members
     public GroupCalendar(UserAccount groupCreator, ArrayList<UserAccount> userAccounts, CalendarPanel calendarPanel) {
@@ -32,7 +32,8 @@ public class GroupCalendar extends CalendarModel {
         accountsInGroup.add(newGroupMember);
     }
     public UserAccount getAccountInGroup(int account) {
-        return accountsInGroup.get(account);
+        UserAccount userAccount = accountsInGroup.get(account);
+        return userAccount;
     }
 
 }

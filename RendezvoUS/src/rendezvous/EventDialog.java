@@ -11,14 +11,15 @@ import java.util.Date;
 public class EventDialog extends JDialog {
     protected JTextField titleField;
     protected JTextArea descriptionField;
-    protected JSpinner dateSpinner;//todo spinner is poor way to input Date/time
+    protected JSpinner dateSpinner;
+    protected JComboBox<Integer> durationHoursComboBox;
+    protected JComboBox<Integer> durationMinutesComboBox;
     protected JButton saveButton;
     protected JButton cancelButton;
     protected JButton deleteButton;
     protected CalendarEvent event;
     protected final boolean isEdit;
     protected final CalendarModel calendarModel;
-    protected MainScreen mainScreen;
     protected Date eventDate;
 
     public EventDialog(Frame owner, boolean modal, CalendarEvent event, CalendarModel calendarModel, Date eventDate) {
@@ -33,7 +34,7 @@ public class EventDialog extends JDialog {
     protected void initializeUI() {
         setTitle(isEdit ? "Edit Event" : "Add Event");
         setLayout(new BorderLayout());
-        setSize(300, 400);
+        setSize(300, 550);
         int marginSize = 10;
         Border margin = new EmptyBorder(marginSize, marginSize, marginSize, marginSize);
 
@@ -42,11 +43,14 @@ public class EventDialog extends JDialog {
         descriptionField = createTextArea("Event Description", isEdit ? event.getDescription() : "");
         dateSpinner = createSpinner("Event Date and Time", eventDate);
 
-        JComboBox<RecurrenceManager.Recurrence> RecurrenceComboBox = new JComboBox<>(RecurrenceManager.Recurrence.values());
-        RecurrenceComboBox.addActionListener(e -> {
-            RecurrenceManager.Recurrence selectedRecurrence = (RecurrenceManager.Recurrence) RecurrenceComboBox.getSelectedItem();
-            mainScreen.changeRecurrence(selectedRecurrence); // Call changeTheme on MainScreen
-        });
+        durationHoursComboBox = createComboBox("Hours", 0, 23);
+        durationMinutesComboBox = createComboBox("Minutes", 0, 30, 30);
+
+        if(isEdit){
+            durationHoursComboBox.setSelectedItem(event.getDurationMinutes()/60);
+            durationMinutesComboBox.setSelectedItem(event.getDurationMinutes()%60);
+        }
+        JComboBox<RecurrenceManager.Recurrence> recurrenceComboBox = new JComboBox<>(RecurrenceManager.Recurrence.values());
 
         // Initialize buttons
         saveButton = createButton("Save", this::saveEvent);
@@ -60,8 +64,17 @@ public class EventDialog extends JDialog {
         fieldsPanel.add(titleField);
         fieldsPanel.add(descriptionField);
         fieldsPanel.add(dateSpinner);
-        fieldsPanel.add(new JLabel("Is this Recurring?"));
-        fieldsPanel.add(RecurrenceComboBox);
+
+        JPanel durationPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
+        durationPanel.setBorder(BorderFactory.createTitledBorder("Duration:"));
+        durationPanel.add(durationHoursComboBox);
+        durationPanel.add(durationMinutesComboBox);
+        fieldsPanel.add(durationPanel);
+
+        JPanel recurrencePanel = new JPanel(new GridLayout(0,1));
+        recurrencePanel.setBorder(BorderFactory.createTitledBorder("Is Event Recurring?"));
+        recurrencePanel.add(recurrenceComboBox);
+        fieldsPanel.add(recurrencePanel);
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(saveButton);
@@ -102,6 +115,41 @@ public class EventDialog extends JDialog {
         return spinner;
     }
 
+    protected JComboBox<Integer> createComboBox(String label, int minValue, int maxValue) {
+        Integer[] values = new Integer[maxValue - minValue + 1];
+        for (int i = 0; i <= maxValue - minValue; i++) {
+            values[i] = minValue + i;
+        }
+        JComboBox<Integer> comboBox = new JComboBox<>(values);
+        comboBox.setBorder(BorderFactory.createTitledBorder(label));
+
+        comboBox.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Dimension getPreferredSize() {
+                return new Dimension(40, 25);
+            }
+        });
+
+        return comboBox;
+    }
+    protected JComboBox<Integer> createComboBox(String label, int minValue, int maxValue, int step) {
+        Integer[] values = new Integer[(maxValue - minValue) / step + 1];
+        for (int i = 0; i <= (maxValue - minValue) / step; i++) {
+            values[i] = minValue + i * step;
+        }
+        JComboBox<Integer> comboBox = new JComboBox<>(values);
+        comboBox.setBorder(BorderFactory.createTitledBorder(label));
+
+        comboBox.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Dimension getPreferredSize() {
+                return new Dimension(40, 25);
+            }
+        });
+
+        return comboBox;
+    }
+
     protected JButton createButton(String text, ActionListener actionListener) {
         JButton button = new JButton(text);
         button.addActionListener(actionListener);
@@ -111,17 +159,25 @@ public class EventDialog extends JDialog {
     protected void saveEvent(ActionEvent e) {
         String title = titleField.getText();
         String description = descriptionField.getText();
-        Date date = (Date)dateSpinner.getValue();
+        Date date = (Date) dateSpinner.getValue();
+
+        int durationHours = 0;
+        int durationMinutes = 0;
+        int duration = 0;
+
+        durationHours = (int) durationHoursComboBox.getSelectedItem();
+        durationMinutes = (int) durationMinutesComboBox.getSelectedItem();
+        duration = durationMinutes + durationHours * 60;
 
         if (isEdit) {
             // Create a new event instance with updated details
-            CalendarEvent updatedEvent = new CalendarEvent(title, date, description);
+            CalendarEvent updatedEvent = new CalendarEvent(title, date, description, duration);
 
             // Pass both the original and the updated event to the updateEvent method
             calendarModel.getEventStorage().updateEvent(this.event, updatedEvent);
         } else {
             // Create a new event
-            CalendarEvent newEvent = new CalendarEvent(title, date, description);
+            CalendarEvent newEvent = new CalendarEvent(title, date, description, duration);
             calendarModel.getEventStorage().addEvent(newEvent);
         }
 

@@ -1,19 +1,13 @@
 package rendezvous;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Frame;
-import java.awt.GridLayout;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
+import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
@@ -23,9 +17,9 @@ public class GroupEventDialog extends EventDialog{
 	
 	//How precise the conflict search will be
 	
-	private int TIME_CHUNK = 30; //How many minutes per chunk of time
-	private int HOURLY_CHUNKS = 60 / TIME_CHUNK; //Number of chunks per hour
-	private int TOTAL_CHUNKS = 24 * HOURLY_CHUNKS; //Total number of chunks per day (Array size)
+	private final int TIME_CHUNK = 30; //How many minutes per chunk of time
+	private final int HOURLY_CHUNKS = 60 / TIME_CHUNK; //Number of chunks per hour
+	private final int TOTAL_CHUNKS = 24 * HOURLY_CHUNKS; //Total number of chunks per day (Array size)
 			
 	private boolean[] busyTimes; // Stores the overlapping busy times
 	private JTextArea conflictWarning; // UI component to give conflict feedback
@@ -43,7 +37,6 @@ public class GroupEventDialog extends EventDialog{
     	busyTimes = new boolean[TOTAL_CHUNKS];
     	
     	//Copy group member list
-    	this.groupMembers = new ArrayList<String>();
         this.groupMembers = new ArrayList<String>(members);
         
         // Calculate overlap
@@ -57,20 +50,28 @@ public class GroupEventDialog extends EventDialog{
         }
         
     }
-	
+
 	@Override
 	protected void initializeUI() {
         setTitle(isEdit ? "Edit Event" : "Add Event");
         setLayout(new BorderLayout());
-        setSize(300, 400);
+        setSize(300, 550);
         int marginSize = 10;
         Border margin = new EmptyBorder(marginSize, marginSize, marginSize, marginSize);
+
 
         // Initialize UI components
         titleField = createTextField("Event Title", isEdit ? event.getTitle() : "");
         descriptionField = createTextArea("Event Description", isEdit ? event.getDescription() : "");
         dateSpinner = createSpinner("Event Date and Time", eventDate);
-        
+
+		durationHoursComboBox = createComboBox("Hours", 0, 23);
+		durationMinutesComboBox = createComboBox("Minutes", 0, 30, 30);
+		if(isEdit){
+			durationHoursComboBox.setSelectedItem(event.getDurationMinutes()/60);
+			durationMinutesComboBox.setSelectedItem(event.getDurationMinutes()%60);
+		}
+
         //Initialize Conflict feedback text
         conflictWarning = new JTextArea("Selected time conflicts with one or more group members", 2, 12);
         conflictWarning.setLineWrap(true);
@@ -78,11 +79,7 @@ public class GroupEventDialog extends EventDialog{
         conflictWarning.setVisible(false);
         conflictWarning.setEditable(false);
 
-        JComboBox<RecurrenceManager.Recurrence> RecurrenceComboBox = new JComboBox<>(RecurrenceManager.Recurrence.values());
-        RecurrenceComboBox.addActionListener(e -> {
-            RecurrenceManager.Recurrence selectedRecurrence = (RecurrenceManager.Recurrence) RecurrenceComboBox.getSelectedItem();
-            mainScreen.changeRecurrence(selectedRecurrence); // Call changeTheme on MainScreen
-        });
+        JComboBox<RecurrenceManager.Recurrence> recurrenceComboBox = new JComboBox<>(RecurrenceManager.Recurrence.values());
 
         // Initialize buttons
         saveButton = createButton("Save", this::saveEvent);
@@ -96,16 +93,25 @@ public class GroupEventDialog extends EventDialog{
         fieldsPanel.add(titleField);
         fieldsPanel.add(descriptionField);
         fieldsPanel.add(dateSpinner);
-        fieldsPanel.add(conflictWarning);
-        fieldsPanel.add(new JLabel("Is this Recurring?"));
-        fieldsPanel.add(RecurrenceComboBox);
+
+		JPanel durationPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
+		durationPanel.setBorder(BorderFactory.createTitledBorder("Duration:"));
+		durationPanel.add(durationHoursComboBox);
+		durationPanel.add(durationMinutesComboBox);
+		fieldsPanel.add(durationPanel);
+
+		JPanel recurrencePanel = new JPanel(new GridLayout(0,1));
+		recurrencePanel.setBorder(BorderFactory.createTitledBorder("Is Event Recurring?"));
+		recurrencePanel.add(recurrenceComboBox);
+		fieldsPanel.add(recurrencePanel);
+		fieldsPanel.add(conflictWarning);
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(saveButton);
         buttonPanel.add(cancelButton);
         buttonPanel.add(deleteButton);
 
-        add(fieldsPanel, BorderLayout.CENTER);
+		add(fieldsPanel, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
 
         applyCurrentTheme();
@@ -122,11 +128,9 @@ public class GroupEventDialog extends EventDialog{
                 	
             			}
             			else {
-            				conflictWarning.setVisible(false);
-        					saveButton.setEnabled(true);
-            			}
-            				
-            				
+							conflictWarning.setVisible(false);
+							saveButton.setEnabled(true);
+						}
             	  }
             	});
         
@@ -160,8 +164,7 @@ public class GroupEventDialog extends EventDialog{
 		int hour;
 		int minute;
 		double index; //The element in the timetable to be edited
-		
-		
+
 		for(int i = 0; i < groupMembers.size(); i++) {
 			//Get the info of user i
 			user = groupMembers.get(i);

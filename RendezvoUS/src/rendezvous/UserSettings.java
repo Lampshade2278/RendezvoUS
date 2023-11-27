@@ -4,15 +4,15 @@ import java.io.Serializable;
 
 class UserSettings implements Serializable {
     // Example setting: theme
-    private String theme;
+    private ThemeManager.Theme theme;
 
     public UserSettings() {
         // Default values
-        this.theme = "Light"; // Default theme
+        this.theme = ThemeManager.Theme.LIGHT; // Default theme
     }
 
     // Getters and setters for each setting
-    public String getTheme() { return theme; }
-    public void setTheme(String theme) { this.theme = theme; }
+    public ThemeManager.Theme getTheme() { return theme; }
+    public void setTheme(ThemeManager.Theme theme) { this.theme = theme; }
     // Additional settings as needed...
 }

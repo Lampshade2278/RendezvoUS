@@ -39,7 +39,7 @@ public class SettingsScreen extends JPanel {
         themeComboBox.addActionListener(e -> {
             ThemeManager.Theme selectedTheme = (ThemeManager.Theme) themeComboBox.getSelectedItem();
             mainScreen.changeTheme(selectedTheme);
-            userAccount.getSettings().setTheme(selectedTheme.name());
+            userAccount.getSettings().setTheme(selectedTheme);
             UserDataManager.saveUserAccount(userAccount);
         });
         appearancePanel.add(new JLabel("Select Theme:"));

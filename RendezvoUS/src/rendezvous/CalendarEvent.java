@@ -11,12 +11,14 @@ public class CalendarEvent implements Serializable {
 
     private String title;
     private Date date;
+    private int durationMinutes;
     private String description;
 
-    public CalendarEvent(String title, Date date, String description) {
+    public CalendarEvent(String title, Date date, String description, int durationMinutes) {
         this.title = title;
         this.date = date;
         this.description = description;
+        this.durationMinutes = durationMinutes;
     }
 
     public String getTitle() {
@@ -28,7 +30,9 @@ public class CalendarEvent implements Serializable {
     public String getDescription() {
         return description;
     }
-
+    public int getDurationMinutes() {
+        return durationMinutes;
+    }
     public void setTitle(String title) {
         this.title = title;
     }

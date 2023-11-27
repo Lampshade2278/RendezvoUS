@@ -45,19 +45,25 @@ public class MainScreen extends JFrame {
         navPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 
         JButton calendarButton = new JButton("Calendar");
-        calendarButton.addActionListener(e -> cardLayout.show(mainPanel, "Calendar"));
-        navPanel.add(calendarButton);
-
         JButton groupButton = new JButton("Group");
-        groupButton.addActionListener(e -> cardLayout.show(mainPanel, "Group"));
-        navPanel.add(groupButton);
-
         JButton settingsButton = new JButton("Settings");
-        settingsButton.addActionListener(e -> cardLayout.show(mainPanel, "Settings"));
-        navPanel.add(settingsButton);
-
         JButton logoutButton = new JButton("Logout");
+
+        calendarButton.addActionListener(e -> {
+            cardLayout.show(mainPanel, "Calendar");
+        });
+        groupButton.addActionListener(e -> {
+            cardLayout.show(mainPanel, "Group");
+        });
+        settingsButton.addActionListener(e -> {
+            cardLayout.show(mainPanel, "Settings");
+        });
         logoutButton.addActionListener(e -> performLogout());
+
+
+        navPanel.add(calendarButton);
+        navPanel.add(groupButton);
+        navPanel.add(settingsButton);
         navPanel.add(logoutButton);
 
         return navPanel;
@@ -83,7 +89,7 @@ public class MainScreen extends JFrame {
         return this.userAccount;
     }
 
-    //todo remove before finishing
+    //todo remove main before finishing
     public static void main(String[] args) {
         // For testing purposes, create a dummy user account
         UserAccount testAccount = new UserAccount("testUser", "testPass");
@@ -92,5 +98,6 @@ public class MainScreen extends JFrame {
 
     //todo implement event recurrence
     public void changeRecurrence(RecurrenceManager.Recurrence theme) {
+
     }
 }

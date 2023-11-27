@@ -1,12 +1,6 @@
-//******************************************
-//Program Name: UserDataManager.java
-//Developer:
-//Date Created:
-//Version:
 //Purpose: Saves UserAccount objects by
 // writing them to DAT files, and loads DAT
 // files to UserAccount objects
-//******************************************
 package rendezvous;
 
 import java.io.*;

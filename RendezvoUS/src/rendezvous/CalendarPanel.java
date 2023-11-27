@@ -230,8 +230,9 @@ public class CalendarPanel extends JPanel {
 
         // Display existing events with buttons for each event
         for (CalendarEvent event : events) {
-            String eventTime = new SimpleDateFormat("hh:mm").format(event.getDate());
-            JButton eventButton = new JButton(event.getTitle() + " at " + eventTime);
+            String eventTime = new SimpleDateFormat("hh:mm aa").format(event.getDate());
+            JButton eventButton = new JButton(event.getTitle() + " at " + eventTime + " for " +
+                                                ((float)event.getDurationMinutes()/60) + " hrs");
             //Action Listener
             eventButton.addActionListener(e -> {
             	//Event dialog now uses the stored date and time instead of the current time
