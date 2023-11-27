@@ -51,9 +51,11 @@ public class MainScreen extends JFrame {
 
         calendarButton.addActionListener(e -> {
             cardLayout.show(mainPanel, "Calendar");
+            calendarPanel.updateCalendar();
         });
         groupButton.addActionListener(e -> {
             cardLayout.show(mainPanel, "Group");
+            groupPanel.updateCalendar();
         });
         settingsButton.addActionListener(e -> {
             cardLayout.show(mainPanel, "Settings");
