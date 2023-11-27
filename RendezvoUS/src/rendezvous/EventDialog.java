@@ -9,26 +9,28 @@ import java.awt.event.ActionListener;
 import java.util.Date;
 
 public class EventDialog extends JDialog {
-    private JTextField titleField;
-    private JTextArea descriptionField;
-    private JSpinner dateSpinner;//todo spinner is poor way to input Date/time
-    private JButton saveButton;
-    private JButton cancelButton;
-    private JButton deleteButton;
-    private CalendarEvent event;
-    private final boolean isEdit;
-    private final CalendarModel calendarModel;
-    private MainScreen mainScreen;
+    protected JTextField titleField;
+    protected JTextArea descriptionField;
+    protected JSpinner dateSpinner;//todo spinner is poor way to input Date/time
+    protected JButton saveButton;
+    protected JButton cancelButton;
+    protected JButton deleteButton;
+    protected CalendarEvent event;
+    protected final boolean isEdit;
+    protected final CalendarModel calendarModel;
+    protected MainScreen mainScreen;
+    protected Date eventDate;
 
     public EventDialog(Frame owner, boolean modal, CalendarEvent event, CalendarModel calendarModel, Date eventDate) {
         super(owner, modal);
         this.event = event;
         this.isEdit = (event != null);
         this.calendarModel = calendarModel;
-        initializeUI(eventDate);
+        this.eventDate = eventDate;
+        initializeUI();
     }
 
-    private void initializeUI(Date eventDate) {
+    protected void initializeUI() {
         setTitle(isEdit ? "Edit Event" : "Add Event");
         setLayout(new BorderLayout());
         setSize(300, 400);
@@ -72,21 +74,21 @@ public class EventDialog extends JDialog {
         applyCurrentTheme();
     }
 
-    private JTextField createTextField(String title, String text) {
+    protected JTextField createTextField(String title, String text) {
         JTextField textField = new JTextField(20);
         textField.setBorder(BorderFactory.createTitledBorder(title));
         textField.setText(text);
         return textField;
     }
 
-    private JTextArea createTextArea(String title, String text) {
+    protected JTextArea createTextArea(String title, String text) {
         JTextArea textArea = new JTextArea(5, 20);
         textArea.setBorder(BorderFactory.createTitledBorder(title));
         textArea.setText(text);
         return textArea;
     }
 
-    private JSpinner createSpinner(String title, Date value) {
+    protected JSpinner createSpinner(String title, Date value) {
         JSpinner spinner = new JSpinner(new SpinnerDateModel());
         spinner.setValue(value);
 
@@ -100,16 +102,16 @@ public class EventDialog extends JDialog {
         return spinner;
     }
 
-    private JButton createButton(String text, ActionListener actionListener) {
+    protected JButton createButton(String text, ActionListener actionListener) {
         JButton button = new JButton(text);
         button.addActionListener(actionListener);
         return button;
     }
 
-    private void saveEvent(ActionEvent e) {
+    protected void saveEvent(ActionEvent e) {
         String title = titleField.getText();
         String description = descriptionField.getText();
-        Date date = (Date) dateSpinner.getValue();
+        Date date = (Date)dateSpinner.getValue();
 
         if (isEdit) {
             // Create a new event instance with updated details
@@ -127,14 +129,14 @@ public class EventDialog extends JDialog {
     }
 
 
-    private void deleteEvent(ActionEvent e) {
+    protected void deleteEvent(ActionEvent e) {
         if (isEdit) {
             calendarModel.getEventStorage().removeEvent(event);
         }
         dispose(); // Close the dialog
     }
 
-    private void applyCurrentTheme() {
+    protected void applyCurrentTheme() {
         ThemeManager.Theme currentTheme = ThemeManager.getCurrentTheme();
         ThemeManager.applyTheme(titleField, currentTheme);
         ThemeManager.applyTheme(descriptionField, currentTheme);

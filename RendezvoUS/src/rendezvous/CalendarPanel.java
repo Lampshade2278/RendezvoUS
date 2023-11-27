@@ -15,13 +15,13 @@ import java.util.List;
 import java.util.Vector;
 
 public class CalendarPanel extends JPanel {
-    private final CalendarModel calendarModel;
-    private JLabel monthLabel;
-    private JTable calendarTable;
+    protected final CalendarModel calendarModel;
+    protected JLabel monthLabel;
+    protected JTable calendarTable;
     public Image backgroundImage;
 
     // Assume that this username is the currently logged-in user's username
-    private String username = "current_user"; // Replace with the actual username
+    protected String username = "current_user"; // Replace with the actual username
 
     public CalendarPanel(UserAccount userAccount) {
         this.calendarModel = new CalendarModel(userAccount, this);
@@ -81,7 +81,7 @@ public class CalendarPanel extends JPanel {
         setupNavigationButtons();
     }
 
-    private void setupNavigationButtons() {
+    protected void setupNavigationButtons() {
         JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         JButton prevButton = new JButton("<");
         prevButton.addActionListener(e -> changeMonth(-1));
@@ -119,12 +119,12 @@ public class CalendarPanel extends JPanel {
         g2d.dispose();
     }
 
-    private void goToday() {
+    protected void goToday() {
         calendarModel.getCalendar().setTime(new Date());
         updateCalendar();
     }
 
-    private void changeMonth(int amount) {
+    protected void changeMonth(int amount) {
         calendarModel.getCalendar().add(Calendar.MONTH, amount);
         updateCalendar();
     }
@@ -169,7 +169,7 @@ public class CalendarPanel extends JPanel {
         monthLabel.setText(monthYearFormat.format(calendarModel.getCalendar().getTime()));
     }
 
-    private String getEventSummary(Date date) {
+    protected String getEventSummary(Date date) {
         List<CalendarEvent> events = calendarModel.getEventStorage().getEventsByDate(date);
         if (events.isEmpty()) {
             return "";
@@ -188,7 +188,7 @@ public class CalendarPanel extends JPanel {
         return " " + eventSummary + " ";
     }
 
-    private class CalendarTableMouseListener extends MouseAdapter {
+    protected class CalendarTableMouseListener extends MouseAdapter {
         public void mouseClicked(MouseEvent e) {
             int row = calendarTable.rowAtPoint(e.getPoint());
             int column = calendarTable.columnAtPoint(e.getPoint());
@@ -198,7 +198,7 @@ public class CalendarPanel extends JPanel {
         }
     }
 
-    private void handleDayClick(int row, int column) {
+    protected void handleDayClick(int row, int column) {
         Calendar cal = (Calendar) calendarModel.getCalendar().clone();
         cal.set(Calendar.DAY_OF_MONTH, 1);
         int offset = cal.get(Calendar.DAY_OF_WEEK) - 1;
@@ -213,7 +213,7 @@ public class CalendarPanel extends JPanel {
         }
     }
 
-    private void displayEventsOnDay(Date selectedDate) {
+    protected void displayEventsOnDay(Date selectedDate) {
 
         SimpleDateFormat headerDateFormat = new SimpleDateFormat("MMM-dd-yyyy");
         String formattedHeaderDate = headerDateFormat.format(selectedDate);
@@ -270,7 +270,7 @@ public class CalendarPanel extends JPanel {
     public void refreshCalendar() {
         updateCalendar();
     }
-    private class CalendarCellRenderer extends DefaultTableCellRenderer {
+    protected class CalendarCellRenderer extends DefaultTableCellRenderer {
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value,
                                                        boolean isSelected, boolean hasFocus, int row, int column) {
