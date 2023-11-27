@@ -8,7 +8,6 @@ import java.util.logging.Logger;
 
 public class EventStorage implements Serializable {
     private transient Map<Date, List<CalendarEvent>> eventsByDay;//Overrides events List in UserAccount
-    // ^^^ change back to events ^^^
     private static final Logger LOGGER = Logger.getLogger(EventStorage.class.getName());
     private String userFileName;
 
