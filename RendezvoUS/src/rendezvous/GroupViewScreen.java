@@ -19,6 +19,8 @@ public class GroupViewScreen extends CalendarPanel {
 	
     public GroupViewScreen(UserAccount groupOwner) {
         super(groupOwner);
+        
+        // Add logic to store group member usernames in the arrayList
         groupMembers.add(groupOwner.getUsername());
         groupMembers.add("Member1");
         groupMembers.add("Member2");

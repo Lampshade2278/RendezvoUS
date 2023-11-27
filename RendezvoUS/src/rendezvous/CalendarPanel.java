@@ -234,7 +234,8 @@ public class CalendarPanel extends JPanel {
             JButton eventButton = new JButton(event.getTitle() + " at " + eventTime);
             //Action Listener
             eventButton.addActionListener(e -> {
-                EventDialog eventDialog = new EventDialog(JFrame.getFrames()[0], true, event, calendarModel, selectedDate);
+            	//Event dialog now uses the stored date and time instead of the current time
+                EventDialog eventDialog = new EventDialog(JFrame.getFrames()[0], true, event, calendarModel, event.getDate());
                 eventDialog.setLocationRelativeTo(this);
                 eventDialog.setVisible(true);
 
