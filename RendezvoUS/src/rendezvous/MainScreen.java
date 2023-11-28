@@ -4,12 +4,13 @@ import javax.swing.*;
 import java.awt.*;
 
 public class MainScreen extends JFrame {
-    private CardLayout cardLayout;
-    private JPanel mainPanel;
+    private final CardLayout cardLayout;
+    private final JPanel mainPanel;
     private CalendarPanel calendarPanel;
-    private SettingsScreen settingsPanel;
-    private GroupViewScreen groupPanel;
-    private UserAccount userAccount;
+    private final SettingsScreen settingsPanel;
+    private final GroupViewScreen groupPanel;
+    private final GroupSettings groupSettingsPanel;
+    private final UserAccount userAccount;
 
     // MainScreen constructor
     public MainScreen(UserAccount userAccount) {
@@ -27,10 +28,12 @@ public class MainScreen extends JFrame {
         calendarPanel = new CalendarPanel(userAccount);
         settingsPanel = new SettingsScreen(this, userAccount);
         groupPanel = new GroupViewScreen(userAccount);
+        groupSettingsPanel = new GroupSettings(userAccount, groupPanel);
 
         mainPanel.add(calendarPanel, "Calendar");
         mainPanel.add(settingsPanel, "Settings");
         mainPanel.add(groupPanel, "Group");
+        mainPanel.add(groupSettingsPanel, "Group Settings");
 
         add(setupNavigationPanel(), BorderLayout.NORTH);
         add(mainPanel, BorderLayout.CENTER);
@@ -47,6 +50,7 @@ public class MainScreen extends JFrame {
         JButton calendarButton = new JButton("Calendar");
         JButton groupButton = new JButton("Group");
         JButton settingsButton = new JButton("Settings");
+        JButton groupSettingsButton = new JButton("Group Settings");
         JButton logoutButton = new JButton("Logout");
 
         calendarButton.addActionListener(e -> {
@@ -60,12 +64,16 @@ public class MainScreen extends JFrame {
         settingsButton.addActionListener(e -> {
             cardLayout.show(mainPanel, "Settings");
         });
+        groupSettingsButton.addActionListener(e -> {
+            cardLayout.show(mainPanel, "Group Settings");
+        });
         logoutButton.addActionListener(e -> performLogout());
 
 
         navPanel.add(calendarButton);
         navPanel.add(groupButton);
         navPanel.add(settingsButton);
+        navPanel.add(groupSettingsButton);
         navPanel.add(logoutButton);
 
         return navPanel;

@@ -13,6 +13,12 @@ public class CalendarModel {
         this.userAccount = userAccount;
         this.calendarPanel = calendarPanel;
     }
+    public CalendarModel(UserAccount userAccount, GroupViewScreen calendarPanel) {
+        this.calendar = new GregorianCalendar();
+        this.userAccount = userAccount;
+        this.calendarPanel = calendarPanel;
+    }
+
 
     // Sets the calendar to a specific month
     public void setMonth(int month) {

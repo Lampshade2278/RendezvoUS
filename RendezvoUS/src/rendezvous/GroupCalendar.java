@@ -7,33 +7,47 @@ public class GroupCalendar extends CalendarModel {
     private ArrayList<UserAccount> accountsInGroup = new ArrayList<>(); // Reference to the user's accounts
 
     //Constructor for a single initial group member
-    public GroupCalendar(UserAccount groupCreator, CalendarPanel calendarPanel) {
-        super(groupCreator, calendarPanel);
+    public GroupCalendar(UserAccount groupCreator, GroupViewScreen groupCalendarPanel) {
+        super(groupCreator, groupCalendarPanel);
         this.groupCreator = groupCreator;
         accountsInGroup.add(groupCreator);
-    }
-    //Constructor for multiple initial group members
-    public GroupCalendar(UserAccount groupCreator, ArrayList<UserAccount> userAccounts, CalendarPanel calendarPanel) {
-        super(groupCreator, calendarPanel);
-        this.groupCreator = groupCreator;
-        accountsInGroup = userAccounts;
 
     }
 
     // Provides access to the EventStorage instance
-    public EventStorage getEventStorage(int account) {
+    public EventStorage getEventStorage(String username) {
+        int account = 0;
+        for (int i = 0; i < accountsInGroup.size(); i++) {
+            UserAccount acc = accountsInGroup.get(i);
+            if (username.equals(acc.getUsername())) {
+               account = i; // Found the matching object, return its index
+            }
+        }
         return new EventStorage(accountsInGroup.get(account).getUsername()); // Create a new EventStorage for the user
     }
 
     public UserAccount getGroupCreator() {
         return groupCreator;
     }
-    public void addAccountToGroup(UserAccount newGroupMember) {
-        accountsInGroup.add(newGroupMember);
+    public void addAccountToGroup(String newGroupMember) {
+        UserAccount newUserAccount = UserDataManager.loadUserAccount(newGroupMember);
+        accountsInGroup.add(newUserAccount);
+    }
+    public void removeAccountInGroup(String groupMember) {
+        int groupMemberIndex = 0;
+        for(int i = 0; i < accountsInGroup.size(); i++){
+            if(accountsInGroup.get(i).getUsername() == groupMember)
+                groupMemberIndex = i;
+        }
+        accountsInGroup.remove(groupMemberIndex);
     }
     public UserAccount getAccountInGroup(int account) {
         UserAccount userAccount = accountsInGroup.get(account);
         return userAccount;
+    }
+
+    public int getAccountsInGroupSize() {
+        return accountsInGroup.size();
     }
 
 }
