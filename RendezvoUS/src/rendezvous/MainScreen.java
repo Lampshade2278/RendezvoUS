@@ -98,13 +98,13 @@ public class MainScreen extends JFrame {
     public UserAccount getUserAccount() {
         return this.userAccount;
     }
-
-    //todo remove main before finishing
+    /*
+    //for testing
     public static void main(String[] args) {
         // For testing purposes, create a dummy user account
         UserAccount testAccount = new UserAccount("testUser", "testPass");
         SwingUtilities.invokeLater(() -> new MainScreen(testAccount));
-    }
+    }*/
 
     //todo implement event recurrence
     public void changeRecurrence(RecurrenceManager.Recurrence theme) {
