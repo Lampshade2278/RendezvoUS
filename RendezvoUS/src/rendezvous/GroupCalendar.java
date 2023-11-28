@@ -36,7 +36,7 @@ public class GroupCalendar extends CalendarModel {
     public void removeAccountInGroup(String groupMember) {
         int groupMemberIndex = 0;
         for(int i = 0; i < accountsInGroup.size(); i++){
-            if(accountsInGroup.get(i).getUsername() == groupMember)
+            if(groupMember.equals(accountsInGroup.get(i).getUsername()))
                 groupMemberIndex = i;
         }
         accountsInGroup.remove(groupMemberIndex);
